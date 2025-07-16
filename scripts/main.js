@@ -1,12 +1,12 @@
 /**
- * GALAXY PIANO - MAIN APPLICATION v1.0 RELEASE
- * Aplicación principal optimizada con UI avanzada
- * Sprint 5 - Versión final de producción
+ * GALAXY PIANO - MAIN APPLICATION COMPLETO
+ * Aplicación principal completa con todas las funcionalidades
+ * Sprint 5 - v1.0 Release Final
  */
 
 class GalaxyPiano {
     constructor() {
-        this.version = '1.0.0'; // 🎉 RELEASE VERSION
+        this.version = '1.0.0';
         this.buildDate = '2024-12-19';
         this.currentMode = 'live';
         this.isInitialized = false;
@@ -25,7 +25,7 @@ class GalaxyPiano {
         this.spectrum3DRenderer = null;
         this.fileManager = null;
         
-        // Estado optimizado de la aplicación
+        // Estado de la aplicación
         this.state = {
             volume: 50,
             currentNotes: [],
@@ -39,12 +39,11 @@ class GalaxyPiano {
             wavesVisible: true,
             spectrumVisible: true,
             analysisMode: 'realtime',
-            
-            // Nuevos estados v1.0
-            performanceMode: 'auto', // 'auto', 'performance', 'quality'
+            performanceMode: 'auto',
             accessibilityMode: false,
             debugMode: false,
-            fullscreen: false
+            fullscreen: false,
+            browserCapabilities: {}
         };
         
         // Referencias DOM
@@ -54,7 +53,7 @@ class GalaxyPiano {
         this.performance = {
             targetFPS: 60,
             adaptiveQuality: true,
-            memoryLimit: 100, // MB
+            memoryLimit: 100,
             autoOptimize: true
         };
         
@@ -62,8 +61,11 @@ class GalaxyPiano {
     }
     
     /**
-     * 🚀 Inicialización optimizada con loading progresivo
+     * ========================================
+     * INICIALIZACIÓN PRINCIPAL
+     * ========================================
      */
+    
     async init() {
         try {
             console.log('🎬 Iniciando Galaxy Piano v1.0...');
@@ -98,9 +100,6 @@ class GalaxyPiano {
         }
     }
     
-    /**
-     * Inicializar UI Manager
-     */
     async initUIManager() {
         if (typeof UIManager === 'undefined') {
             throw new Error('UIManager no está disponible');
@@ -112,9 +111,133 @@ class GalaxyPiano {
         console.log('🎨 UI Manager inicializado');
     }
     
+    initDOMReferences() {
+        this.elements = {
+            // Inputs principales
+            noteInput: document.getElementById('note-input'),
+            composerNoteInput: document.getElementById('composer-note-input'),
+            analysisNoteInput: document.getElementById('analysis-note-input'),
+            
+            // Controles de volumen
+            volumeSlider: document.getElementById('volume'),
+            volumeDisplay: document.getElementById('volume-display'),
+            
+            // Botones principales
+            playButton: document.getElementById('play-btn'),
+            stopButton: document.getElementById('stop-btn'),
+            composerPlayButton: document.getElementById('composer-play-btn'),
+            composerStopButton: document.getElementById('composer-stop-btn'),
+            analyzeButton: document.getElementById('analyze-btn'),
+            
+            // Botones de proyecto
+            newProjectButton: document.getElementById('new-project-btn'),
+            saveProjectButton: document.getElementById('save-project-btn'),
+            deleteProjectButton: document.getElementById('delete-project-btn'),
+            
+            // Botones de exportación
+            exportMidiButton: document.getElementById('export-midi-btn'),
+            exportMp3Button: document.getElementById('export-mp3-btn'),
+            exportJsonButton: document.getElementById('export-json-btn'),
+            exportScreenshotButton: document.getElementById('export-screenshot-btn'),
+            
+            // Canvas elements
+            galaxyCanvas: document.getElementById('galaxy-canvas'),
+            galaxyCanvasComposer: document.getElementById('galaxy-canvas-composer'),
+            galaxyCanvasAnalysis: document.getElementById('galaxy-canvas-analysis'),
+            wavesCanvas: document.getElementById('waves-canvas'),
+            spectrumCanvas: document.getElementById('spectrum-canvas'),
+            
+            // Navegación
+            navButtons: document.querySelectorAll('.nav-btn'),
+            
+            // Project management
+            projectSelect: document.getElementById('project-select'),
+            projectName: document.getElementById('project-name'),
+            projectDescription: document.getElementById('project-description'),
+            
+            // Análisis
+            chordAnalysis: document.getElementById('chord-analysis'),
+            chordSuggestions: document.getElementById('chord-suggestions'),
+            currentKey: document.getElementById('current-key'),
+            currentScale: document.getElementById('current-scale'),
+            chordProgression: document.getElementById('chord-progression'),
+            
+            // Status displays
+            currentNotes: document.getElementById('current-notes'),
+            chordInfo: document.getElementById('chord-info'),
+            audioStatus: document.getElementById('audio-status'),
+            galaxyStatus: document.getElementById('galaxy-status'),
+            composerStatus: document.getElementById('composer-status'),
+            analysisStatus: document.getElementById('analysis-status'),
+            
+            // BPM control
+            bpmSlider: document.getElementById('bpm-slider'),
+            bpmDisplay: document.getElementById('bpm-display'),
+            
+            // Sequencer
+            addSequenceButton: document.getElementById('add-sequence-btn'),
+            sequencerGrid: document.getElementById('sequencer-grid'),
+            
+            // Export progress
+            exportProgress: document.getElementById('export-progress'),
+            exportProgressFill: document.getElementById('export-progress-fill'),
+            exportProgressText: document.getElementById('export-progress-text'),
+            
+            // Help
+            helpButton: document.getElementById('help-btn'),
+            helpModal: document.getElementById('help-modal')
+        };
+        
+        console.log('📋 Referencias DOM configuradas');
+    }
+    
     /**
-     * Inicialización progresiva con feedback
+     * ========================================
+     * DETECCIÓN DE CAPACIDADES
+     * ========================================
      */
+    
+    async detectBrowserCapabilities() {
+        const capabilities = {
+            webAudio: !!(window.AudioContext || window.webkitAudioContext),
+            webGL: !!window.WebGLRenderingContext,
+            canvas2D: !!document.createElement('canvas').getContext,
+            mediaRecorder: !!window.MediaRecorder,
+            localStorage: this.testLocalStorage(),
+            performance: !!window.performance,
+            requestAnimationFrame: !!window.requestAnimationFrame
+        };
+        
+        console.log('🔍 Capacidades del navegador:', capabilities);
+        
+        if (!capabilities.webGL) {
+            this.performance.adaptiveQuality = false;
+            this.uiManager.showNotification('WebGL no disponible - visualización limitada', 'warning');
+        }
+        
+        if (!capabilities.webAudio) {
+            throw new Error('Web Audio API no soportada - audio requerido');
+        }
+        
+        this.state.browserCapabilities = capabilities;
+    }
+    
+    testLocalStorage() {
+        try {
+            localStorage.setItem('test', 'test');
+            localStorage.removeItem('test');
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+    
+    /**
+     * ========================================
+     * INICIALIZACIÓN PROGRESIVA
+     * ========================================
+     */
+    
     async progressiveInitialization() {
         const initSteps = [
             { fn: this.initAudioEngine, progress: 20, message: 'Cargando motor de audio...' },
@@ -132,66 +255,14 @@ class GalaxyPiano {
             try {
                 this.uiManager.updateLoadingProgress(step.progress, step.message);
                 await step.fn.call(this);
-                await this.delay(100); // Dar tiempo para UI feedback
+                await this.delay(100);
             } catch (error) {
                 console.error(`❌ Error en ${step.fn.name}:`, error);
-                this.uiManager.showNotification(
-                    `Error cargando ${step.message.toLowerCase()}`, 
-                    'warning'
-                );
-                // Continuar con otros módulos
+                this.uiManager.showNotification(`Error cargando ${step.message.toLowerCase()}`, 'warning');
             }
         }
     }
     
-    /**
-     * Detectar capacidades del navegador
-     */
-    async detectBrowserCapabilities() {
-        const capabilities = {
-            webAudio: !!(window.AudioContext || window.webkitAudioContext),
-            webGL: !!window.WebGLRenderingContext,
-            canvas2D: !!document.createElement('canvas').getContext,
-            mediaRecorder: !!window.MediaRecorder,
-            localStorage: this.testLocalStorage(),
-            performance: !!window.performance,
-            requestAnimationFrame: !!window.requestAnimationFrame
-        };
-        
-        console.log('🔍 Capacidades del navegador:', capabilities);
-        
-        // Ajustar configuración según capacidades
-        if (!capabilities.webGL) {
-            this.performance.adaptiveQuality = false;
-            this.uiManager.showNotification(
-                'WebGL no disponible - visualización limitada', 
-                'warning'
-            );
-        }
-        
-        if (!capabilities.webAudio) {
-            throw new Error('Web Audio API no soportada - audio requerido');
-        }
-        
-        this.state.browserCapabilities = capabilities;
-    }
-    
-    /**
-     * Test de localStorage
-     */
-    testLocalStorage() {
-        try {
-            localStorage.setItem('test', 'test');
-            localStorage.removeItem('test');
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-    
-    /**
-     * Inicializar audio engine optimizado
-     */
     async initAudioEngine() {
         if (typeof AudioEngine === 'undefined') {
             throw new Error('AudioEngine no disponible');
@@ -203,12 +274,9 @@ class GalaxyPiano {
         this.state.audioReady = true;
         this.uiManager.updateModuleStatus('audio', 'active');
         
-        console.log('🔊 Audio Engine optimizado inicializado');
+        console.log('🔊 Audio Engine inicializado');
     }
     
-    /**
-     * Inicializar galaxy renderer con optimización adaptativa
-     */
     async initGalaxyRenderer() {
         if (typeof GalaxyRenderer === 'undefined') {
             throw new Error('GalaxyRenderer no disponible');
@@ -221,7 +289,6 @@ class GalaxyPiano {
         
         this.galaxyRenderer = new GalaxyRenderer(canvas);
         
-        // Configuración adaptativa según rendimiento
         if (this.performance.adaptiveQuality) {
             this.optimizeGalaxySettings();
         }
@@ -231,14 +298,10 @@ class GalaxyPiano {
         this.state.galaxyReady = true;
         this.uiManager.updateModuleStatus('galaxy', 'active');
         
-        console.log('🌌 Galaxy Renderer optimizado inicializado');
+        console.log('🌌 Galaxy Renderer inicializado');
     }
     
-    /**
-     * Optimizar configuración de galaxia
-     */
     optimizeGalaxySettings() {
-        // Detectar rendimiento del dispositivo
         const isLowEnd = this.isLowEndDevice();
         
         if (isLowEnd) {
@@ -246,19 +309,11 @@ class GalaxyPiano {
             this.galaxyRenderer.config.starSize = 1.5;
             this.performance.targetFPS = 30;
             
-            this.uiManager.showNotification(
-                'Modo de rendimiento activado', 
-                'info', 
-                2000
-            );
+            this.uiManager.showNotification('Modo de rendimiento activado', 'info', 2000);
         }
     }
     
-    /**
-     * Detectar dispositivo de bajo rendimiento
-     */
     isLowEndDevice() {
-        // Heurísticas básicas
         const hardwareConcurrency = navigator.hardwareConcurrency || 1;
         const memory = navigator.deviceMemory || 1;
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -266,9 +321,6 @@ class GalaxyPiano {
         return hardwareConcurrency < 4 || memory < 2 || isMobile;
     }
     
-    /**
-     * Inicializar star system optimizado
-     */
     initStarSystem() {
         if (typeof StarSystem === 'undefined') {
             throw new Error('StarSystem no disponible');
@@ -276,17 +328,13 @@ class GalaxyPiano {
         
         this.starSystem = new StarSystem(this.galaxyRenderer);
         
-        // Configuración adaptativa
         if (this.isLowEndDevice()) {
             this.starSystem.config.maxStars = 50;
         }
         
-        console.log('⭐ Star System optimizado inicializado');
+        console.log('⭐ Star System inicializado');
     }
     
-    /**
-     * Inicializar sequencer con validación
-     */
     async initSequencer() {
         if (typeof MusicalSequencer === 'undefined') {
             console.warn('⚠️ MusicalSequencer no disponible - modo compositor limitado');
@@ -301,9 +349,6 @@ class GalaxyPiano {
         console.log('🎼 Musical Sequencer inicializado');
     }
     
-    /**
-     * Inicializar music theory
-     */
     initMusicTheory() {
         if (typeof MusicTheoryEngine === 'undefined') {
             console.warn('⚠️ MusicTheoryEngine no disponible - análisis limitado');
@@ -314,9 +359,6 @@ class GalaxyPiano {
         console.log('🎵 Music Theory Engine inicializado');
     }
     
-    /**
-     * Inicializar project manager
-     */
     async initProjectManager() {
         if (typeof ProjectManager === 'undefined') {
             console.warn('⚠️ ProjectManager no disponible - sin persistencia');
@@ -342,9 +384,6 @@ class GalaxyPiano {
         console.log('💾 Project Manager inicializado');
     }
     
-    /**
-     * Inicializar waves 2D renderer
-     */
     async initWaves2DRenderer() {
         if (typeof Waves2DRenderer === 'undefined') {
             console.warn('⚠️ Waves2DRenderer no disponible - sin análisis 2D');
@@ -363,9 +402,6 @@ class GalaxyPiano {
         console.log('🌊 Waves2D Renderer inicializado');
     }
     
-    /**
-     * Inicializar spectrum 3D renderer
-     */
     async initSpectrum3DRenderer() {
         if (typeof Spectrum3DRenderer === 'undefined') {
             console.warn('⚠️ Spectrum3DRenderer no disponible - sin espectro 3D');
@@ -387,9 +423,6 @@ class GalaxyPiano {
         console.log('📊 Spectrum3D Renderer inicializado');
     }
     
-    /**
-     * Inicializar file manager
-     */
     initFileManager() {
         if (typeof FileManager === 'undefined') {
             console.warn('⚠️ FileManager no disponible - sin exportación');
@@ -407,23 +440,21 @@ class GalaxyPiano {
     }
     
     /**
-     * Configurar event listeners optimizados
+     * ========================================
+     * EVENT LISTENERS
+     * ========================================
      */
+    
     setupOptimizedEventListeners() {
-        // Debounced event listeners para mejor rendimiento
         this.setupDebouncedInputs();
         this.setupOptimizedMouseEvents();
         this.setupKeyboardShortcuts();
         this.setupWindowEvents();
         
-        console.log('🎧 Event listeners optimizados configurados');
+        console.log('🎧 Event listeners configurados');
     }
     
-    /**
-     * Configurar inputs con debounce
-     */
     setupDebouncedInputs() {
-        // Input de notas con debounce
         const noteInputs = [
             this.elements.noteInput,
             this.elements.composerNoteInput,
@@ -438,7 +469,6 @@ class GalaxyPiano {
             }
         });
         
-        // Volume slider con throttle
         if (this.elements.volumeSlider) {
             this.elements.volumeSlider.addEventListener('input', 
                 this.throttle((e) => {
@@ -446,19 +476,25 @@ class GalaxyPiano {
                 }, 50)
             );
         }
+        
+        if (this.elements.bpmSlider) {
+            this.elements.bpmSlider.addEventListener('input', (e) => {
+                this.updateBPM(parseInt(e.target.value));
+            });
+        }
     }
     
-    /**
-     * Configurar eventos de mouse optimizados
-     */
     setupOptimizedMouseEvents() {
-        // Botones principales
         const buttonMappings = {
             playButton: () => this.playNotes(),
             stopButton: () => this.stopNotes(),
             composerPlayButton: () => this.playComposerSequence(),
             composerStopButton: () => this.stopComposerSequence(),
             analyzeButton: () => this.analyzeNotes(),
+            newProjectButton: () => this.createNewProject(),
+            saveProjectButton: () => this.saveCurrentProject(),
+            deleteProjectButton: () => this.deleteCurrentProject(),
+            addSequenceButton: () => this.addSequenceToComposer(),
             exportMidiButton: () => this.exportToMIDI(),
             exportMp3Button: () => this.exportToMP3(),
             exportJsonButton: () => this.exportToJSON(),
@@ -483,26 +519,44 @@ class GalaxyPiano {
                 });
             }
         });
+        
+        // Navigation buttons
+        this.elements.navButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const mode = btn.dataset.mode;
+                if (mode) {
+                    this.switchMode(mode);
+                }
+            });
+        });
+        
+        // Help button
+        if (this.elements.helpButton) {
+            this.elements.helpButton.addEventListener('click', () => {
+                this.toggleHelpModal();
+            });
+        }
+        
+        // Project selector
+        if (this.elements.projectSelect) {
+            this.elements.projectSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    this.loadProject(e.target.value);
+                }
+            });
+        }
     }
     
-    /**
-     * Configurar atajos de teclado
-     */
     setupKeyboardShortcuts() {
         // Los atajos están manejados por UIManager
         console.log('⌨️ Atajos de teclado configurados por UIManager');
     }
     
-    /**
-     * Configurar eventos de ventana
-     */
     setupWindowEvents() {
-        // Resize optimizado con debounce
         window.addEventListener('resize', this.debounce(() => {
             this.handleWindowResize();
         }, 100));
         
-        // Visibility API para optimización
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 this.pauseNonEssentialSystems();
@@ -511,58 +565,112 @@ class GalaxyPiano {
             }
         });
         
-        // Cleanup al cerrar
         window.addEventListener('beforeunload', () => {
             this.handleAppExit();
         });
     }
     
     /**
-     * Pausar sistemas no esenciales
+     * ========================================
+     * INTERFAZ DE USUARIO
+     * ========================================
      */
-    pauseNonEssentialSystems() {
-        if (this.galaxyRenderer && this.galaxyRenderer.state.isAnimating) {
-            this.galaxyRenderer.stopAnimation();
+    
+    setupCompleteUI() {
+        this.updateSystemStatus();
+        this.updateProjectSelector();
+        this.initComposerMode();
+        this.initAnalysisMode();
+        
+        console.log('🖥️ Interfaz completa configurada');
+    }
+    
+    updateSystemStatus() {
+        if (this.elements.audioStatus) {
+            this.elements.audioStatus.textContent = this.state.audioReady ? '🔊 Audio: Listo' : '🔊 Audio: Cargando...';
         }
         
-        if (this.spectrum3DRenderer && this.spectrum3DRenderer.state.isAnimating) {
-            this.spectrum3DRenderer.stopAnimation();
+        if (this.elements.galaxyStatus) {
+            this.elements.galaxyStatus.textContent = this.state.galaxyReady ? '🌌 Galaxy: Listo' : '🌌 Galaxy: Cargando...';
+        }
+        
+        if (this.elements.composerStatus) {
+            this.elements.composerStatus.textContent = this.state.composerReady ? '🎼 Compositor: Listo' : '🎼 Compositor: Preparando...';
+        }
+        
+        if (this.elements.analysisStatus) {
+            this.elements.analysisStatus.textContent = this.state.analysisReady ? '📊 Análisis: Listo' : '📊 Análisis: Inicializando...';
+        }
+    }
+    
+    updateProjectSelector() {
+        if (!this.projectManager || !this.elements.projectSelect) return;
+        
+        const projects = this.projectManager.getProjectsList();
+        const select = this.elements.projectSelect;
+        
+        select.innerHTML = '';
+        
+        if (projects.length === 0) {
+            select.innerHTML = '<option value="">Sin proyectos</option>';
+            return;
+        }
+        
+        projects.forEach(project => {
+            const option = document.createElement('option');
+            option.value = project.id;
+            option.textContent = project.name;
+            option.selected = project.isCurrent;
+            select.appendChild(option);
+        });
+    }
+    
+    initComposerMode() {
+        if (this.elements.currentKey) {
+            this.elements.currentKey.textContent = 'C Major';
+        }
+        
+        if (this.elements.currentScale) {
+            this.elements.currentScale.textContent = 'Mayor';
+        }
+        
+        if (this.elements.chordProgression) {
+            this.elements.chordProgression.textContent = 'I - vi - IV - V';
+        }
+        
+        if (this.elements.bpmDisplay) {
+            this.elements.bpmDisplay.textContent = '120 BPM';
+        }
+    }
+    
+    initAnalysisMode() {
+        if (this.elements.chordAnalysis) {
+            this.elements.chordAnalysis.textContent = '---';
+        }
+        
+        if (this.elements.chordSuggestions) {
+            this.elements.chordSuggestions.textContent = '---';
         }
     }
     
     /**
-     * Reanudar sistemas
+     * ========================================
+     * FUNCIONES PRINCIPALES
+     * ========================================
      */
-    resumeNonEssentialSystems() {
-        if (this.galaxyRenderer && !this.galaxyRenderer.state.isAnimating) {
-            this.galaxyRenderer.startAnimation();
-        }
-        
-        if (this.spectrum3DRenderer && !this.spectrum3DRenderer.state.isAnimating) {
-            this.spectrum3DRenderer.startAnimation();
-        }
-    }
     
-    /**
-     * Manejar cambios en input de notas
-     */
     handleNoteInputChange(value, inputId) {
         if (!value.trim()) return;
         
-        // Análisis en tiempo real para compositor
         if (inputId === 'composer-note-input' && this.musicTheory) {
             this.analyzeComposerInput(value);
         }
         
-        // Preview para análisis
         if (inputId === 'analysis-note-input' && this.musicTheory) {
             this.previewAnalysis(value);
         }
     }
     
-    /**
-     * Reproducir notas optimizado
-     */
     async playNotes() {
         const input = this.elements.noteInput?.value?.trim();
         if (!input) {
@@ -577,13 +685,11 @@ class GalaxyPiano {
                 throw new Error('Formato de nota inválido');
             }
             
-            // Validación optimizada
             const invalidNotes = notes.filter(note => note < 1 || note > 88);
             if (invalidNotes.length > 0) {
                 throw new Error(`Notas fuera de rango: ${invalidNotes.join(', ')}`);
             }
             
-            // Reproducir con feedback
             this.uiManager.trackUserAction('play_notes', { notes, count: notes.length });
             
             await this.audioEngine.playNotes(notes);
@@ -592,7 +698,6 @@ class GalaxyPiano {
                 this.starSystem.createStars(notes, 2.0, 0.8);
             }
             
-            // Análisis musical si hay múltiples notas
             if (this.musicTheory && notes.length > 1) {
                 const analysis = this.musicTheory.analyzeChord(notes);
                 if (analysis.bestMatch) {
@@ -613,9 +718,17 @@ class GalaxyPiano {
         }
     }
     
-    /**
-     * Analizar notas en modo análisis
-     */
+    stopNotes() {
+        if (this.audioEngine) {
+            this.audioEngine.stopAll();
+        }
+        
+        this.state.currentNotes = [];
+        this.updateNoteDisplay([]);
+        
+        this.uiManager.showNotification('Reproducción detenida', 'info', 1500);
+    }
+    
     async analyzeNotes() {
         const input = this.elements.analysisNoteInput?.value?.trim();
         if (!input) {
@@ -628,10 +741,8 @@ class GalaxyPiano {
             
             this.uiManager.trackUserAction('analyze_notes', { notes, count: notes.length });
             
-            // Reproducir audio
             await this.audioEngine.playNotes(notes, 3.0, 0.8);
             
-            // Visualizaciones
             if (this.state.wavesVisible && this.waves2DRenderer) {
                 if (notes.length === 1) {
                     this.waves2DRenderer.addNote(notes[0], 3000, 0.8);
@@ -644,7 +755,6 @@ class GalaxyPiano {
                 this.starSystem.createStars(notes, 3.0, 0.8);
             }
             
-            // Análisis musical
             if (this.musicTheory && notes.length > 1) {
                 const analysis = this.musicTheory.analyzeChord(notes);
                 if (analysis.bestMatch) {
@@ -664,9 +774,167 @@ class GalaxyPiano {
         }
     }
     
+    async playComposerSequence() {
+        if (!this.sequencer) {
+            this.uiManager.showNotification('Secuenciador no disponible', 'error');
+            return;
+        }
+        
+        try {
+            await this.sequencer.playSequence();
+            this.state.isPlaying = true;
+            this.uiManager.showNotification('Secuencia iniciada', 'success', 2000);
+        } catch (error) {
+            this.handleActionError(error, 'Error reproduciendo secuencia');
+        }
+    }
+    
+    stopComposerSequence() {
+        if (this.sequencer) {
+            this.sequencer.stopSequence();
+        }
+        
+        this.state.isPlaying = false;
+        this.uiManager.showNotification('Secuencia detenida', 'info', 1500);
+    }
+    
+    async addSequenceToComposer() {
+        const input = this.elements.composerNoteInput?.value?.trim();
+        if (!input) {
+            this.uiManager.showNotification('Ingresa una secuencia musical', 'warning');
+            return;
+        }
+        
+        if (!this.sequencer) {
+            this.uiManager.showNotification('Secuenciador no disponible', 'error');
+            return;
+        }
+        
+        try {
+            const result = this.sequencer.createSequenceFromInput(input, 0);
+            
+            if (result.success) {
+                this.uiManager.showNotification('Secuencia añadida', 'success', 2000);
+                this.elements.composerNoteInput.value = '';
+                this.updateSequencerDisplay();
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            this.handleActionError(error, 'Error añadiendo secuencia');
+        }
+    }
+    
     /**
-     * Exportar a MIDI optimizado
+     * ========================================
+     * GESTIÓN DE PROYECTOS
+     * ========================================
      */
+    
+    async createNewProject() {
+        if (!this.projectManager) {
+            this.uiManager.showNotification('Gestor de proyectos no disponible', 'error');
+            return;
+        }
+        
+        try {
+            const project = this.projectManager.createProject({
+                name: 'Nuevo Proyecto Musical',
+                description: 'Descripción del proyecto'
+            });
+            
+            await this.projectManager.loadProject(project.id);
+            this.state.currentProject = project.id;
+            
+            this.updateProjectSelector();
+            this.updateProjectMetadata(project);
+            
+            this.uiManager.showNotification('Nuevo proyecto creado', 'success');
+        } catch (error) {
+            this.handleActionError(error, 'Error creando proyecto');
+        }
+    }
+    
+    async saveCurrentProject() {
+        if (!this.projectManager || !this.state.currentProject) {
+            this.uiManager.showNotification('No hay proyecto para guardar', 'warning');
+            return;
+        }
+        
+        try {
+            const projectData = this.gatherProjectData();
+            await this.projectManager.saveProject(this.state.currentProject, projectData);
+            
+            this.uiManager.showNotification('Proyecto guardado', 'success', 2000);
+        } catch (error) {
+            this.handleActionError(error, 'Error guardando proyecto');
+        }
+    }
+    
+    async deleteCurrentProject() {
+        if (!this.projectManager || !this.state.currentProject) {
+            this.uiManager.showNotification('No hay proyecto para eliminar', 'warning');
+            return;
+        }
+        
+        if (!confirm('¿Estás seguro de que quieres eliminar este proyecto?')) {
+            return;
+        }
+        
+        try {
+            await this.projectManager.deleteProject(this.state.currentProject);
+            this.state.currentProject = null;
+            
+            this.updateProjectSelector();
+            this.uiManager.showNotification('Proyecto eliminado', 'success');
+        } catch (error) {
+            this.handleActionError(error, 'Error eliminando proyecto');
+        }
+    }
+    
+    async loadProject(projectId) {
+        if (!this.projectManager) {
+            this.uiManager.showNotification('Gestor de proyectos no disponible', 'error');
+            return;
+        }
+        
+        try {
+            const project = await this.projectManager.loadProject(projectId);
+            this.state.currentProject = projectId;
+            
+            this.updateProjectMetadata(project);
+            this.uiManager.showNotification(`Proyecto cargado: ${project.name}`, 'success', 2000);
+        } catch (error) {
+            this.handleActionError(error, 'Error cargando proyecto');
+        }
+    }
+    
+    updateProjectMetadata(project) {
+        if (this.elements.projectName) {
+            this.elements.projectName.value = project.name || '';
+        }
+        
+        if (this.elements.projectDescription) {
+            this.elements.projectDescription.value = project.description || '';
+        }
+    }
+    
+    gatherProjectData() {
+        return {
+            name: this.elements.projectName?.value || 'Proyecto Sin Nombre',
+            description: this.elements.projectDescription?.value || '',
+            notes: this.state.currentNotes,
+            bpm: this.getBPM(),
+            volume: this.state.volume
+        };
+    }
+    
+    /**
+     * ========================================
+     * EXPORTACIÓN
+     * ========================================
+     */
+    
     async exportToMIDI() {
         if (!this.fileManager) {
             throw new Error('Sistema de exportación no disponible');
@@ -681,19 +949,76 @@ class GalaxyPiano {
         });
         
         if (result.success) {
-            this.uiManager.showNotification(
-                `✅ MIDI guardado: ${result.filename}`, 
-                'success'
-            );
+            this.uiManager.showNotification(`✅ MIDI guardado: ${result.filename}`, 'success');
             this.uiManager.trackUserAction('export', { format: 'midi', size: result.size });
         }
         
         return result;
     }
     
+    async exportToMP3() {
+        if (!this.fileManager) {
+            throw new Error('Sistema de exportación no disponible');
+        }
+        
+        this.uiManager.showNotification('Iniciando exportación MP3...', 'info');
+        
+        const result = await this.fileManager.exportToMP3(this.state.currentProject, {
+            bitRate: 128,
+            duration: 10000
+        });
+        
+        if (result.success) {
+            this.uiManager.showNotification(`✅ MP3 guardado: ${result.filename}`, 'success');
+            this.uiManager.trackUserAction('export', { format: 'mp3', size: result.size });
+        }
+        
+        return result;
+    }
+    
+    async exportToJSON() {
+        if (!this.fileManager) {
+            throw new Error('Sistema de exportación no disponible');
+        }
+        
+        this.uiManager.showNotification('Iniciando exportación JSON...', 'info');
+        
+        const result = await this.fileManager.exportToJSON(this.state.currentProject, {
+            prettify: true,
+            includeMetadata: true
+        });
+        
+        if (result.success) {
+            this.uiManager.showNotification(`✅ JSON guardado: ${result.filename}`, 'success');
+            this.uiManager.trackUserAction('export', { format: 'json', size: result.size });
+        }
+        
+        return result;
+    }
+    
+    async exportScreenshot() {
+        if (!this.fileManager) {
+            throw new Error('Sistema de exportación no disponible');
+        }
+        
+        this.uiManager.showNotification('Capturando imagen...', 'info');
+        
+        const result = await this.fileManager.exportGalaxyScreenshot('png', 0.9);
+        
+        if (result.success) {
+            this.uiManager.showNotification(`✅ Imagen guardada: ${result.filename}`, 'success');
+            this.uiManager.trackUserAction('export', { format: 'png', size: result.size });
+        }
+        
+        return result;
+    }
+    
     /**
-     * Cambiar modo con animación
+     * ========================================
+     * GESTIÓN DE MODOS
+     * ========================================
      */
+    
     async switchMode(mode) {
         if (!['live', 'composer', 'analysis'].includes(mode) || mode === this.currentMode) {
             return;
@@ -702,23 +1027,18 @@ class GalaxyPiano {
         const fromMode = this.currentMode;
         this.currentMode = mode;
         
-        // Detener reproducción
         this.stopAllPlayback();
         
-        // Animación de transición
         await this.uiManager.animateModeTransition(fromMode, mode);
         
-        // Actualizar navegación
         this.updateNavigation(mode);
         
-        // Configuraciones específicas
         if (mode === 'composer') {
             this.initComposerMode();
         } else if (mode === 'analysis') {
             this.initAnalysisMode();
         }
         
-        // Actualizar clase del body
         document.body.className = 'galaxy-mode-' + mode;
         
         this.uiManager.trackUserAction('mode_switch', { from: fromMode, to: mode });
@@ -727,9 +1047,6 @@ class GalaxyPiano {
         console.log('🔄 Modo cambiado:', fromMode, '→', mode);
     }
     
-    /**
-     * Detener toda reproducción
-     */
     stopAllPlayback() {
         if (this.audioEngine) {
             this.audioEngine.stopAll();
@@ -744,9 +1061,6 @@ class GalaxyPiano {
         this.updateNoteDisplay([]);
     }
     
-    /**
-     * Actualizar navegación
-     */
     updateNavigation(activeMode) {
         this.elements.navButtons.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.mode === activeMode);
@@ -754,8 +1068,141 @@ class GalaxyPiano {
     }
     
     /**
-     * Tests de producción
+     * ========================================
+     * UTILIDADES Y HELPERS
+     * ========================================
      */
+    
+    parseNoteInput(input) {
+        if (!input || typeof input !== 'string') {
+            return [];
+        }
+        
+        const notes = input.split(',')
+            .map(note => note.trim())
+            .filter(note => note.length > 0)
+            .map(note => {
+                const num = parseInt(note);
+                return isNaN(num) ? null : num;
+            })
+            .filter(note => note !== null);
+        
+        return notes;
+    }
+    
+    updateVolume(volume) {
+        this.state.volume = Math.max(0, Math.min(100, volume));
+        
+        if (this.audioEngine) {
+            this.audioEngine.setVolume(this.state.volume / 100);
+        }
+        
+        if (this.elements.volumeDisplay) {
+            this.elements.volumeDisplay.textContent = this.state.volume + '%';
+        }
+        
+        if (this.elements.volumeSlider) {
+            this.elements.volumeSlider.value = this.state.volume;
+        }
+    }
+    
+    updateBPM(bpm) {
+        if (this.elements.bpmDisplay) {
+            this.elements.bpmDisplay.textContent = bpm + ' BPM';
+        }
+        
+        if (this.sequencer) {
+            this.sequencer.state.currentBPM = bpm;
+        }
+    }
+    
+    getBPM() {
+        return this.elements.bpmSlider ? parseInt(this.elements.bpmSlider.value) : 120;
+    }
+    
+    updateNoteDisplay(notes) {
+        if (this.elements.currentNotes) {
+            if (notes.length === 0) {
+                this.elements.currentNotes.textContent = 'Notas: Ninguna';
+            } else {
+                this.elements.currentNotes.textContent = `Notas: ${notes.join(', ')}`;
+            }
+        }
+    }
+    
+    updateChordInfo(chord) {
+        if (this.elements.chordInfo) {
+            this.elements.chordInfo.textContent = `Acorde: ${chord}`;
+        }
+        
+        if (this.elements.chordAnalysis) {
+            this.elements.chordAnalysis.textContent = chord;
+        }
+    }
+    
+    updateSequencerDisplay() {
+        // Actualizar display del secuenciador
+        console.log('📊 Actualizando display del secuenciador');
+    }
+    
+    analyzeComposerInput(input) {
+        // Análisis en tiempo real para el compositor
+        console.log('🎵 Analizando entrada del compositor:', input);
+    }
+    
+    previewAnalysis(input) {
+        // Preview para el modo análisis
+        console.log('🔬 Preview de análisis:', input);
+    }
+    
+    toggleHelpModal() {
+        if (this.elements.helpModal) {
+            this.elements.helpModal.classList.toggle('hidden');
+        }
+    }
+    
+    pauseNonEssentialSystems() {
+        if (this.galaxyRenderer && this.galaxyRenderer.state.isAnimating) {
+            this.galaxyRenderer.stopAnimation();
+        }
+        
+        if (this.spectrum3DRenderer && this.spectrum3DRenderer.state.isAnimating) {
+            this.spectrum3DRenderer.stopAnimation();
+        }
+    }
+    
+    resumeNonEssentialSystems() {
+        if (this.galaxyRenderer && !this.galaxyRenderer.state.isAnimating) {
+            this.galaxyRenderer.startAnimation();
+        }
+        
+        if (this.spectrum3DRenderer && !this.spectrum3DRenderer.state.isAnimating) {
+            this.spectrum3DRenderer.startAnimation();
+        }
+    }
+    
+    handleWindowResize() {
+        if (this.galaxyRenderer) {
+            this.galaxyRenderer.handleResize();
+        }
+        
+        if (this.spectrum3DRenderer) {
+            this.spectrum3DRenderer.handleResize();
+        }
+    }
+    
+    handleAppExit() {
+        if (this.projectManager && this.state.currentProject) {
+            this.projectManager.saveCurrentProject().catch(console.error);
+        }
+    }
+    
+    /**
+     * ========================================
+     * TESTING Y FINALIZACIÓN
+     * ========================================
+     */
+    
     async runProductionTests() {
         if (!this.isDevelopmentMode()) return;
         
@@ -781,16 +1228,12 @@ class GalaxyPiano {
         return testResults;
     }
     
-    /**
-     * Test sistema de audio
-     */
     async testAudioSystem() {
         try {
             if (!this.audioEngine || !this.audioEngine.state.isReady) {
                 return false;
             }
             
-            // Test nota básica
             await this.audioEngine.testNote(40, 0.1);
             return true;
         } catch (error) {
@@ -799,25 +1242,16 @@ class GalaxyPiano {
         }
     }
     
-    /**
-     * Test sistema de galaxia
-     */
     testGalaxySystem() {
         return this.state.galaxyReady && this.galaxyRenderer && this.galaxyRenderer.state.isInitialized;
     }
     
-    /**
-     * Test sistema de UI
-     */
     testUISystem() {
         return this.uiManager && 
                document.getElementById('toast-container') &&
                this.elements.noteInput !== null;
     }
     
-    /**
-     * Test rendimiento
-     */
     testPerformance() {
         const memoryMB = this.getMemoryUsage();
         const fps = this.uiManager.performanceData.fps;
@@ -825,9 +1259,6 @@ class GalaxyPiano {
         return memoryMB < this.performance.memoryLimit && fps > 30;
     }
     
-    /**
-     * Obtener uso de memoria
-     */
     getMemoryUsage() {
         if (performance.memory) {
             return Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
@@ -835,24 +1266,18 @@ class GalaxyPiano {
         return 0;
     }
     
-    /**
-     * Finalizar inicialización
-     */
     finalizeInitialization() {
         this.isInitialized = true;
         
-        // Ocultar loading screen
         this.uiManager.updateLoadingProgress(100, '¡Listo para explorar el universo musical! 🌌');
         setTimeout(() => {
             this.uiManager.hideLoadingScreen();
         }, 800);
         
-        // Estado inicial
         this.updateSystemStatus();
         this.updateVolume(this.state.volume);
         this.switchMode('live');
         
-        // Bienvenida
         setTimeout(() => {
             this.uiManager.showNotification(
                 `🎉 ¡Bienvenido a Galaxy Piano v${this.version}!`, 
@@ -869,42 +1294,40 @@ class GalaxyPiano {
     }
     
     /**
-     * Manejar error crítico
+     * ========================================
+     * MANEJO DE ERRORES
+     * ========================================
      */
+    
     handleCriticalError(error) {
         console.error('💥 Error crítico:', error);
         
-        // Mostrar error amigable
         this.uiManager.showNotification(
             'Error crítico de inicialización - recargando...', 
             'error',
             5000
         );
         
-        // Auto-reload después de delay
         setTimeout(() => {
             window.location.reload();
         }, 3000);
     }
     
-    /**
-     * Manejar errores de acciones
-     */
     handleActionError(error, context = 'Operación') {
         console.error(`❌ ${context}:`, error);
         this.uiManager.showNotification(`${context}: ${error.message}`, 'error');
     }
     
-    /**
-     * Verificar modo desarrollo
-     */
     isDevelopmentMode() {
-        return this.uiManager.isDevelopmentMode();
+        return this.uiManager ? this.uiManager.isDevelopmentMode() : false;
     }
     
     /**
-     * Utilidades de debounce y throttle
+     * ========================================
+     * UTILIDADES DE TIMING
+     * ========================================
      */
+    
     debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -930,16 +1353,16 @@ class GalaxyPiano {
         }
     }
     
-    /**
-     * Delay helper
-     */
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
     
     /**
-     * Obtener estadísticas completas del sistema
+     * ========================================
+     * ESTADÍSTICAS Y INFO
+     * ========================================
      */
+    
     getSystemStats() {
         return {
             version: this.version,
@@ -970,29 +1393,12 @@ class GalaxyPiano {
         };
     }
     
-    // Mantener métodos existentes para compatibilidad
-    initDOMReferences() { /* Implementación existente */ }
-    updateVolume(volume) { /* Implementación existente */ }
-    parseNoteInput(input) { /* Implementación existente */ }
-    updateNoteDisplay(notes) { /* Implementación existente */ }
-    updateChordInfo(chord) { /* Implementación existente */ }
-    updateSystemStatus() { /* Implementación existente */ }
-    playComposerSequence() { /* Implementación existente */ }
-    stopComposerSequence() { /* Implementación existente */ }
-    stopNotes() { /* Implementación existente */ }
-    analyzeComposerInput(input) { /* Implementación existente */ }
-    previewAnalysis(input) { /* Implementación existente */ }
-    exportToMP3() { /* Implementación existente */ }
-    exportToJSON() { /* Implementación existente */ }
-    exportScreenshot() { /* Implementación existente */ }
-    initComposerMode() { /* Implementación existente */ }
-    initAnalysisMode() { /* Implementación existente */ }
-    handleWindowResize() { /* Implementación existente */ }
-    handleAppExit() { /* Implementación existente */ }
-    
     /**
-     * Destruir aplicación completa
+     * ========================================
+     * DESTRUCTOR
+     * ========================================
      */
+    
     destroy() {
         // Destruir en orden inverso
         if (this.fileManager) this.fileManager.destroy();
@@ -1008,22 +1414,38 @@ class GalaxyPiano {
     }
 }
 
-// Inicialización automática optimizada
+/**
+ * ========================================
+ * INICIALIZACIÓN AUTOMÁTICA
+ * ========================================
+ */
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        console.log('🌌 Galaxy Piano v1.0 - Starting Application...');
+        
         window.galaxyPiano = new GalaxyPiano();
         await window.galaxyPiano.init();
+        
+        console.log('✨ Galaxy Piano completamente inicializado');
+        
     } catch (error) {
         console.error('💥 Error fatal en inicialización:', error);
         
         // Fallback UI básico
         document.body.innerHTML = `
-            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #0a0a0f; color: white; font-family: Arial;">
-                <div style="text-align: center;">
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #0a0a0f; color: white; font-family: Arial; text-align: center;">
+                <div>
                     <h1>🌌 Galaxy Piano</h1>
                     <p>Error de inicialización crítico</p>
-                    <button onclick="window.location.reload()" style="padding: 10px 20px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <div style="margin: 20px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; font-family: monospace; font-size: 0.8rem; color: #ccc;">
+                        ${error.message || error}
+                    </div>
+                    <button onclick="window.location.reload()" style="padding: 10px 20px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px;">
                         🔄 Recargar
+                    </button>
+                    <button onclick="localStorage.clear(); window.location.reload()" style="padding: 10px 20px; background: #ff8800; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px;">
+                        🧹 Limpiar y Recargar
                     </button>
                 </div>
             </div>
@@ -1031,9 +1453,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Cleanup global
+// Cleanup global al cerrar
 window.addEventListener('beforeunload', () => {
     if (window.galaxyPiano) {
         window.galaxyPiano.destroy();
     }
 });
+
+// Manejo de errores no capturados como último recurso
+window.addEventListener('error', (event) => {
+    console.error('🚨 Error no capturado:', event.error);
+});
+
+// Debug utilities en modo desarrollo
+if (window.location.hostname === 'localhost' || window.location.search.includes('debug')) {
+    window.debugGalaxyPiano = () => {
+        if (window.galaxyPiano) {
+            console.log('🔍 Galaxy Piano Debug Info:');
+            console.table(window.galaxyPiano.getSystemStats());
+        }
+    };
+    
+    console.log('🛠️ Modo debug activado. Usa debugGalaxyPiano() para información del sistema.');
+}
