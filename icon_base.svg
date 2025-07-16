@@ -1,0 +1,16 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo oscuro -->
+  <rect width="512" height="512" fill="#0a0a0f"/>
+  
+  <!-- Círculo exterior -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#00ff88" stroke-width="8" opacity="0.3"/>
+  
+  <!-- Estrella central -->
+  <polygon points="256,100 290,180 380,180 320,240 340,320 256,280 172,320 192,240 132,180 222,180" fill="#00ff88"/>
+  
+  <!-- Puntos de estrellas pequeñas -->
+  <circle cx="100" cy="150" r="3" fill="#00ff88" opacity="0.7"/>
+  <circle cx="400" cy="200" r="2" fill="#00ff88" opacity="0.8"/>
+  <circle cx="150" cy="400" r="2.5" fill="#00ff88" opacity="0.6"/>
+  <circle cx="380" cy="380" r="2" fill="#00ff88" opacity="0.7"/>
+</svg>

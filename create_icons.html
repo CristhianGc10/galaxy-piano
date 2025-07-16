@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator</title>
+</head>
+<body>
+    <canvas id="canvas" width="512" height="512" style="border: 1px solid #ccc;"></canvas>
+    <br>
+    <button onclick="generateIcons()">Generate Icons</button>
+    <div id="downloads"></div>
+
+    <script>
+        function generateIcons() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Fondo oscuro
+            ctx.fillStyle = '#0a0a0f';
+            ctx.fillRect(0, 0, 512, 512);
+            
+            // Estrella central
+            ctx.fillStyle = '#00ff88';
+            ctx.beginPath();
+            const points = [
+                [256, 100], [290, 180], [380, 180], [320, 240], 
+                [340, 320], [256, 280], [172, 320], [192, 240], 
+                [132, 180], [222, 180]
+            ];
+            ctx.moveTo(points[0][0], points[0][1]);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i][0], points[i][1]);
+            }
+            ctx.closePath();
+            ctx.fill();
+            
+            // Círculo exterior
+            ctx.strokeStyle = '#00ff88';
+            ctx.lineWidth = 8;
+            ctx.globalAlpha = 0.3;
+            ctx.beginPath();
+            ctx.arc(256, 256, 200, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+            
+            // Generar todos los tamaños
+            const sizes = [16, 32, 72, 96, 128, 144, 152, 192, 384, 512];
+            const downloads = document.getElementById('downloads');
+            downloads.innerHTML = '';
+            
+            sizes.forEach(size => {
+                const smallCanvas = document.createElement('canvas');
+                smallCanvas.width = size;
+                smallCanvas.height = size;
+                const smallCtx = smallCanvas.getContext('2d');
+                
+                smallCtx.drawImage(canvas, 0, 0, size, size);
+                
+                const link = document.createElement('a');
+                link.download = `icon-${size}x${size}.png`;
+                link.href = smallCanvas.toDataURL();
+                link.textContent = `Download ${size}x${size}`;
+                link.style.display = 'block';
+                link.style.margin = '5px 0';
+                downloads.appendChild(link);
+                
+                // Auto-click para descargar
+                link.click();
+            });
+            
+            // Favicon específicos
+            [16, 32].forEach(size => {
+                const smallCanvas = document.createElement('canvas');
+                smallCanvas.width = size;
+                smallCanvas.height = size;
+                const smallCtx = smallCanvas.getContext('2d');
+                
+                smallCtx.drawImage(canvas, 0, 0, size, size);
+                
+                const link = document.createElement('a');
+                link.download = `favicon-${size}x${size}.png`;
+                link.href = smallCanvas.toDataURL();
+                link.textContent = `Download favicon-${size}x${size}`;
+                link.style.display = 'block';
+                link.style.margin = '5px 0';
+                downloads.appendChild(link);
+                
+                link.click();
+            });
+            
+            // Favicon.ico (como PNG)
+            const icoCanvas = document.createElement('canvas');
+            icoCanvas.width = 32;
+            icoCanvas.height = 32;
+            const icoCtx = icoCanvas.getContext('2d');
+            icoCtx.drawImage(canvas, 0, 0, 32, 32);
+            
+            const icoLink = document.createElement('a');
+            icoLink.download = 'favicon.ico.png';
+            icoLink.href = icoCanvas.toDataURL();
+            icoLink.textContent = 'Download favicon.ico (rename to .ico)';
+            icoLink.style.display = 'block';
+            icoLink.style.margin = '5px 0';
+            downloads.appendChild(icoLink);
+            icoLink.click();
+        }
+        
+        // Generar automáticamente al cargar
+        window.onload = generateIcons;
+    </script>
+</body>
+</html>

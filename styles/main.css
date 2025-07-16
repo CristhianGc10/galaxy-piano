@@ -1,0 +1,207 @@
+/* =================================
+   GALAXY PIANO - MAIN STYLES v1.0
+   Estilos base mejorados con mejor UX
+   ================================= */
+
+/* Variables CSS mejoradas */
+:root {
+    /* Colores principales mejorados */
+    --ui-primary: #00ff88;
+    --ui-secondary: #ff0080;
+    --ui-accent: #ff8800;
+    --ui-success: #4caf50;
+    --ui-warning: #ff9800;
+    --ui-error: #f44336;
+    --ui-info: #2196f3;
+    
+    /* Colores de fondo y superficie */
+    --bg-primary: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+    --bg-secondary: rgba(26, 26, 46, 0.9);
+    --bg-glass: rgba(255, 255, 255, 0.08);
+    --bg-glass-dark: rgba(0, 0, 0, 0.3);
+    
+    /* Texto mejorado */
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --text-muted: #b0b0b0;
+    --text-dim: #808080;
+    --text-accent: var(--ui-accent);
+    
+    /* Bordes y líneas */
+    --border-primary: rgba(255, 255, 255, 0.2);
+    --border-accent: var(--ui-primary);
+    --border-input: rgba(255, 255, 255, 0.3);
+    
+    /* Shadows mejoradas */
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
+    --shadow-modal: 0 10px 40px rgba(0, 0, 0, 0.5);
+    
+    /* Espaciado consistente */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-xxl: 48px;
+    
+    /* Radios de borde */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    
+    /* Fuentes */
+    --font-primary: 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+    
+    /* Transiciones */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0.0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Reset mejorado */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-primary);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout principal mejorado */
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header mejorado con mejor contraste */
+.header {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border-bottom: 2px solid var(--border-primary);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-subtle);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--ui-primary), var(--ui-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    text-shadow: 0 0 30px var(--ui-primary);
+}
+
+.version-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.version-badge {
+    background: linear-gradient(45deg, var(--ui-primary), var(--ui-secondary));
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-lg);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--shadow-glow);
+}
+
+/* Main content mejorado */
+.main {
+    flex: 1;
+    padding: var(--spacing-xl);
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Modos de visualización mejorados */
+.mode-section {
+    display: none;
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.mode-section.active {
+    display: block;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Footer mejorado */
+.footer {
+    background: var(--bg-glass-dark);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-primary);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    margin-top: auto;
+}
+
+/* Responsive mejorado */
+@media (max-width: 768px) {
+    .header {
+        padding: var(--spacing-md);
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .main {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+    
+    .version-info {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .version-info {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
