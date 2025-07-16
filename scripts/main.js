@@ -115,6 +115,7 @@ class GalaxyPiano {
             sequencerGrid: document.getElementById('sequencer-grid'),
             chordAnalysis: document.getElementById('chord-analysis'),
             chordSuggestions: document.getElementById('chord-suggestions'),
+            addSequenceButton: document.getElementById('add-sequence-btn'),
             
             // Project management (nuevos)
             projectSelect: document.getElementById('project-select'),
@@ -153,71 +154,105 @@ class GalaxyPiano {
         });
         
         // Live mode existente
-        this.elements.playButton?.addEventListener('click', () => {
-            this.playNotes();
-        });
-        
-        this.elements.stopButton?.addEventListener('click', () => {
-            this.stopNotes();
-        });
-        
-        this.elements.noteInput?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        if (this.elements.playButton) {
+            this.elements.playButton.addEventListener('click', () => {
                 this.playNotes();
-            }
-        });
+            });
+        }
         
-        this.elements.volumeSlider?.addEventListener('input', (e) => {
-            this.updateVolume(parseInt(e.target.value));
-        });
+        if (this.elements.stopButton) {
+            this.elements.stopButton.addEventListener('click', () => {
+                this.stopNotes();
+            });
+        }
+        
+        if (this.elements.noteInput) {
+            this.elements.noteInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.playNotes();
+                }
+            });
+        }
+        
+        if (this.elements.volumeSlider) {
+            this.elements.volumeSlider.addEventListener('input', (e) => {
+                this.updateVolume(parseInt(e.target.value));
+            });
+        }
         
         // Composer mode (nuevos)
-        this.elements.composerPlayButton?.addEventListener('click', () => {
-            this.playComposerSequence();
-        });
+        if (this.elements.composerPlayButton) {
+            this.elements.composerPlayButton.addEventListener('click', () => {
+                this.playComposerSequence();
+            });
+        }
         
-        this.elements.composerStopButton?.addEventListener('click', () => {
-            this.stopComposerSequence();
-        });
+        if (this.elements.composerStopButton) {
+            this.elements.composerStopButton.addEventListener('click', () => {
+                this.stopComposerSequence();
+            });
+        }
         
-        this.elements.composerNoteInput?.addEventListener('input', (e) => {
-            this.analyzeComposerInput(e.target.value);
-        });
+        if (this.elements.composerNoteInput) {
+            this.elements.composerNoteInput.addEventListener('input', (e) => {
+                this.analyzeComposerInput(e.target.value);
+            });
+            
+            this.elements.composerNoteInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.addToSequence();
+                }
+            });
+        }
         
-        this.elements.composerNoteInput?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        if (this.elements.addSequenceButton) {
+            this.elements.addSequenceButton.addEventListener('click', () => {
                 this.addToSequence();
-            }
-        });
+            });
+        }
         
-        this.elements.bpmSlider?.addEventListener('input', (e) => {
-            this.updateBPM(parseInt(e.target.value));
-        });
+        if (this.elements.bpmSlider) {
+            this.elements.bpmSlider.addEventListener('input', (e) => {
+                this.updateBPM(parseInt(e.target.value));
+            });
+        }
         
         // Project management (nuevos)
-        this.elements.newProjectButton?.addEventListener('click', () => {
-            this.createNewProject();
-        });
+        if (this.elements.newProjectButton) {
+            this.elements.newProjectButton.addEventListener('click', () => {
+                this.createNewProject();
+            });
+        }
         
-        this.elements.saveProjectButton?.addEventListener('click', () => {
-            this.saveCurrentProject();
-        });
+        if (this.elements.saveProjectButton) {
+            this.elements.saveProjectButton.addEventListener('click', () => {
+                this.saveCurrentProject();
+            });
+        }
         
-        this.elements.deleteProjectButton?.addEventListener('click', () => {
-            this.deleteCurrentProject();
-        });
+        if (this.elements.deleteProjectButton) {
+            this.elements.deleteProjectButton.addEventListener('click', () => {
+                this.deleteCurrentProject();
+            });
+        }
         
-        this.elements.projectSelect?.addEventListener('change', (e) => {
-            this.loadSelectedProject(e.target.value);
-        });
+        if (this.elements.projectSelect) {
+            this.elements.projectSelect.addEventListener('change', (e) => {
+                this.loadSelectedProject(e.target.value);
+            });
+        }
         
-        this.elements.projectName?.addEventListener('input', (e) => {
-            this.updateProjectMetadata('name', e.target.value);
-        });
+        if (this.elements.projectName) {
+            this.elements.projectName.addEventListener('input', (e) => {
+                this.updateProjectMetadata('name', e.target.value);
+            });
+        }
         
-        this.elements.projectDescription?.addEventListener('input', (e) => {
-            this.updateProjectMetadata('description', e.target.value);
-        });
+        if (this.elements.projectDescription) {
+            this.elements.projectDescription.addEventListener('input', (e) => {
+                this.updateProjectMetadata('description', e.target.value);
+            });
+        }
         
         // Window events
         window.addEventListener('resize', () => {
@@ -273,6 +308,7 @@ class GalaxyPiano {
             console.log('🌌 Galaxy Renderer inicializado');
             
             this.updateGalaxyStatus('Listo');
+            this.hideLoading();
             
         } catch (error) {
             console.error('❌ Error inicializando galaxy:', error);
@@ -465,7 +501,7 @@ class GalaxyPiano {
             return;
         }
         
-        const input = this.elements.noteInput.value.trim();
+        const input = this.elements.noteInput?.value?.trim();
         if (!input) {
             this.showError('Ingresa una nota (1-88)');
             return;
@@ -594,7 +630,7 @@ class GalaxyPiano {
      * Añadir entrada a la secuencia (NUEVO)
      */
     addToSequence() {
-        const input = this.elements.composerNoteInput?.value.trim();
+        const input = this.elements.composerNoteInput?.value?.trim();
         if (!input || !this.sequencer) {
             return;
         }
@@ -604,7 +640,9 @@ class GalaxyPiano {
             
             if (result.success) {
                 this.updateSequencerGrid();
-                this.elements.composerNoteInput.value = '';
+                if (this.elements.composerNoteInput) {
+                    this.elements.composerNoteInput.value = '';
+                }
                 this.showSuccess('Secuencia añadida correctamente');
             } else {
                 this.showError(result.error);
@@ -910,7 +948,7 @@ class GalaxyPiano {
      */
     showSuccess(message) {
         console.log('✅ Éxito:', message);
-        // TODO: Implementar notificaciones visuales
+        // TODO: Implementar notificaciones visuales elegantes
     }
     
     /**
@@ -976,11 +1014,18 @@ class GalaxyPiano {
             this.audioEngine.setVolume(this.state.volume / 100);
         }
         
-        this.elements.volumeSlider.value = this.state.volume;
-        this.elements.volumeDisplay.textContent = this.state.volume + '%';
+        if (this.elements.volumeSlider) {
+            this.elements.volumeSlider.value = this.state.volume;
+        }
+        
+        if (this.elements.volumeDisplay) {
+            this.elements.volumeDisplay.textContent = this.state.volume + '%';
+        }
     }
     
     updateNoteDisplay(notes) {
+        if (!this.elements.currentNotesDisplay) return;
+        
         if (notes.length === 0) {
             this.elements.currentNotesDisplay.textContent = 'Notas: Ninguna';
         } else {
@@ -995,7 +1040,9 @@ class GalaxyPiano {
     }
     
     updateChordInfo(chordName) {
-        this.elements.chordInfoDisplay.textContent = 'Acorde: ' + chordName;
+        if (this.elements.chordInfoDisplay) {
+            this.elements.chordInfoDisplay.textContent = 'Acorde: ' + chordName;
+        }
     }
     
     updateSystemStatus() {
@@ -1006,6 +1053,8 @@ class GalaxyPiano {
     }
     
     updateAudioStatus(customStatus = null) {
+        if (!this.elements.audioStatusDisplay) return;
+        
         let status, className;
         
         if (customStatus) {
@@ -1024,6 +1073,8 @@ class GalaxyPiano {
     }
     
     updateGalaxyStatus(customStatus = null) {
+        if (!this.elements.galaxyStatusDisplay) return;
+        
         let status, className;
         
         if (customStatus) {

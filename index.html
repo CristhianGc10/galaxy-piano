@@ -3,18 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌌 Galaxy Piano - Musical Universe</title>
+    <title>🌌 Galaxy Piano - Musical Universe v1.3.0</title>
     
     <!-- CSS Files -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/galaxy.css">
     <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/composer.css">
+    
+    <!-- External Libraries CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
 </head>
 <body>
     <div id="app">
         <!-- Header -->
         <header class="header">
-            <h1>🌌 Galaxy Piano</h1>
+            <div class="header-content">
+                <h1>🌌 Galaxy Piano</h1>
+                <div class="version-badge">v1.3.0 - Sprint 3</div>
+            </div>
             <nav class="nav">
                 <button class="nav-btn active" data-mode="live">🎹 Live</button>
                 <button class="nav-btn" data-mode="composer">🎼 Compositor</button>
@@ -24,7 +32,7 @@
 
         <!-- Main Content -->
         <main class="main">
-            <!-- Live Mode -->
+            <!-- Live Mode (Sprint 1 & 2 - Sin cambios) -->
             <section id="live-mode" class="mode-section active">
                 <div class="controls-panel">
                     <div class="input-group">
@@ -32,7 +40,7 @@
                         <input 
                             type="text" 
                             id="note-input" 
-                            placeholder="Ej: 40 (C4) o 40,43,47 (Em chord)"
+                            placeholder="Ej: 40 (C4) o 40,43,47"
                             class="note-input"
                         >
                         <button id="play-btn" class="play-btn">🎵 Tocar</button>
@@ -46,66 +54,259 @@
                     </div>
                 </div>
 
-                <!-- Galaxy Canvas Container -->
+                <!-- Galaxy Canvas -->
                 <div class="galaxy-container">
                     <canvas id="galaxy-canvas"></canvas>
-                    
-                    <!-- Loading Indicator -->
                     <div class="loading" id="loading">
                         <div class="loading-spinner"></div>
-                        <p id="loading-text">Cargando Universe Musical...</p>
-                    </div>
-                    
-                    <!-- Stars Indicator -->
-                    <div class="stars-indicator" id="stars-indicator">
-                        ⭐ Estrellas Activas: <span id="stars-count">0</span>
-                    </div>
-                    
-                    <!-- Galaxy Controls -->
-                    <div class="galaxy-controls" id="galaxy-controls" style="display: none;">
-                        <button class="galaxy-control-btn" id="auto-rotate-btn">🔄 Auto</button>
-                        <button class="galaxy-control-btn" id="reset-view-btn">📷 Reset</button>
-                        <button class="galaxy-control-btn" id="test-star-btn">🧪 Test</button>
-                    </div>
-                    
-                    <!-- Galaxy Info -->
-                    <div class="galaxy-info" id="galaxy-info">
-                        <strong>🌌 Galaxy Piano</strong><br>
-                        Sprint 2: Sistema de Estrellas<br>
-                        <span id="performance-info">Inicializando...</span>
-                    </div>
-                </div>
-                
-                <!-- Test Section for Sprint 2 -->
-                <div class="controls-panel">
-                    <div class="input-group">
-                        <label>🧪 Tests Sprint 2:</label>
-                        <button class="play-btn" id="test-blue-btn" style="font-size: 0.9rem;">🔵 Azul (1)</button>
-                        <button class="play-btn" id="test-white-btn" style="font-size: 0.9rem;">⚪ Blanco (40)</button>
-                        <button class="play-btn" id="test-red-btn" style="font-size: 0.9rem;">🔴 Rojo (88)</button>
-                        <button class="stop-btn" id="debug-btn" style="font-size: 0.9rem;">🔍 Debug</button>
+                        <p>Cargando Universe Musical...</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Composer Mode -->
+            <!-- Composer Mode (Sprint 3 - NUEVO) -->
             <section id="composer-mode" class="mode-section">
-                <div class="composer-panel">
-                    <h2>🎼 Compositor Musical</h2>
-                    <p>Próximamente en Sprint 3...</p>
+                <!-- Project Management Panel -->
+                <div class="project-panel">
+                    <div class="project-header">
+                        <h2>💾 Gestión de Proyectos</h2>
+                        <div class="project-actions">
+                            <button id="new-project-btn" class="action-btn new-btn">➕ Nuevo</button>
+                            <button id="save-project-btn" class="action-btn save-btn">💾 Guardar</button>
+                            <button id="delete-project-btn" class="action-btn delete-btn">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="project-controls">
+                        <div class="project-selector">
+                            <label for="project-select">Proyecto Actual:</label>
+                            <select id="project-select" class="project-select">
+                                <option value="">Seleccionar proyecto...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="project-metadata">
+                            <div class="metadata-field">
+                                <label for="project-name">Nombre:</label>
+                                <input type="text" id="project-name" class="metadata-input" placeholder="Nombre del proyecto">
+                            </div>
+                            <div class="metadata-field">
+                                <label for="project-description">Descripción:</label>
+                                <textarea id="project-description" class="metadata-textarea" placeholder="Descripción del proyecto"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Musical Sequencer Panel -->
+                <div class="sequencer-panel">
+                    <div class="sequencer-header">
+                        <h2>🎼 Secuenciador Musical</h2>
+                        <div class="sequencer-controls">
+                            <button id="composer-play-btn" class="play-btn-large">▶️ Reproducir</button>
+                            <button id="composer-stop-btn" class="stop-btn-large">⏹️ Detener</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Input Panel -->
+                    <div class="composer-input-panel">
+                        <div class="input-section">
+                            <label for="composer-note-input">Entrada Musical:</label>
+                            <input 
+                                type="text" 
+                                id="composer-note-input" 
+                                class="composer-input" 
+                                placeholder="Ej: C4+E4+G4@2.0v0.8, Am@1.0, F+A+C@1.5"
+                            >
+                            <button id="add-sequence-btn" class="add-btn">➕ Añadir</button>
+                        </div>
+                        
+                        <div class="tempo-section">
+                            <label for="bpm-slider">Tempo:</label>
+                            <input type="range" id="bpm-slider" min="60" max="200" value="120">
+                            <span id="bpm-display">120 BPM</span>
+                        </div>
+                    </div>
+
+                    <!-- Sequencer Grid -->
+                    <div class="sequencer-grid-container">
+                        <div class="grid-header">
+                            <h3>🎛️ Grid de Secuencias</h3>
+                            <div class="grid-controls">
+                                <button class="grid-btn clear-btn">🧹 Limpiar</button>
+                                <button class="grid-btn loop-btn active">🔁 Loop</button>
+                            </div>
+                        </div>
+                        <div id="sequencer-grid" class="sequencer-grid">
+                            <!-- Se generará dinámicamente -->
+                            <div class="track-row">
+                                <div class="track-label">Track 1</div>
+                                <div class="step-container">
+                                    <!-- 16 steps por track -->
+                                    <div class="step" data-track="0" data-step="0"></div>
+                                    <div class="step" data-track="0" data-step="1"></div>
+                                    <div class="step" data-track="0" data-step="2"></div>
+                                    <div class="step" data-track="0" data-step="3"></div>
+                                    <div class="step" data-track="0" data-step="4"></div>
+                                    <div class="step" data-track="0" data-step="5"></div>
+                                    <div class="step" data-track="0" data-step="6"></div>
+                                    <div class="step" data-track="0" data-step="7"></div>
+                                    <div class="step" data-track="0" data-step="8"></div>
+                                    <div class="step" data-track="0" data-step="9"></div>
+                                    <div class="step" data-track="0" data-step="10"></div>
+                                    <div class="step" data-track="0" data-step="11"></div>
+                                    <div class="step" data-track="0" data-step="12"></div>
+                                    <div class="step" data-track="0" data-step="13"></div>
+                                    <div class="step" data-track="0" data-step="14"></div>
+                                    <div class="step" data-track="0" data-step="15"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-row">
+                                <div class="track-label">Track 2</div>
+                                <div class="step-container">
+                                    <!-- Repetir para Track 2 -->
+                                    <div class="step" data-track="1" data-step="0"></div>
+                                    <div class="step" data-track="1" data-step="1"></div>
+                                    <div class="step" data-track="1" data-step="2"></div>
+                                    <div class="step" data-track="1" data-step="3"></div>
+                                    <div class="step" data-track="1" data-step="4"></div>
+                                    <div class="step" data-track="1" data-step="5"></div>
+                                    <div class="step" data-track="1" data-step="6"></div>
+                                    <div class="step" data-track="1" data-step="7"></div>
+                                    <div class="step" data-track="1" data-step="8"></div>
+                                    <div class="step" data-track="1" data-step="9"></div>
+                                    <div class="step" data-track="1" data-step="10"></div>
+                                    <div class="step" data-track="1" data-step="11"></div>
+                                    <div class="step" data-track="1" data-step="12"></div>
+                                    <div class="step" data-track="1" data-step="13"></div>
+                                    <div class="step" data-track="1" data-step="14"></div>
+                                    <div class="step" data-track="1" data-step="15"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-row">
+                                <div class="track-label">Track 3</div>
+                                <div class="step-container">
+                                    <!-- Repetir para Track 3 -->
+                                    <div class="step" data-track="2" data-step="0"></div>
+                                    <div class="step" data-track="2" data-step="1"></div>
+                                    <div class="step" data-track="2" data-step="2"></div>
+                                    <div class="step" data-track="2" data-step="3"></div>
+                                    <div class="step" data-track="2" data-step="4"></div>
+                                    <div class="step" data-track="2" data-step="5"></div>
+                                    <div class="step" data-track="2" data-step="6"></div>
+                                    <div class="step" data-track="2" data-step="7"></div>
+                                    <div class="step" data-track="2" data-step="8"></div>
+                                    <div class="step" data-track="2" data-step="9"></div>
+                                    <div class="step" data-track="2" data-step="10"></div>
+                                    <div class="step" data-track="2" data-step="11"></div>
+                                    <div class="step" data-track="2" data-step="12"></div>
+                                    <div class="step" data-track="2" data-step="13"></div>
+                                    <div class="step" data-track="2" data-step="14"></div>
+                                    <div class="step" data-track="2" data-step="15"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-row">
+                                <div class="track-label">Track 4</div>
+                                <div class="step-container">
+                                    <!-- Repetir para Track 4 -->
+                                    <div class="step" data-track="3" data-step="0"></div>
+                                    <div class="step" data-track="3" data-step="1"></div>
+                                    <div class="step" data-track="3" data-step="2"></div>
+                                    <div class="step" data-track="3" data-step="3"></div>
+                                    <div class="step" data-track="3" data-step="4"></div>
+                                    <div class="step" data-track="3" data-step="5"></div>
+                                    <div class="step" data-track="3" data-step="6"></div>
+                                    <div class="step" data-track="3" data-step="7"></div>
+                                    <div class="step" data-track="3" data-step="8"></div>
+                                    <div class="step" data-track="3" data-step="9"></div>
+                                    <div class="step" data-track="3" data-step="10"></div>
+                                    <div class="step" data-track="3" data-step="11"></div>
+                                    <div class="step" data-track="3" data-step="12"></div>
+                                    <div class="step" data-track="3" data-step="13"></div>
+                                    <div class="step" data-track="3" data-step="14"></div>
+                                    <div class="step" data-track="3" data-step="15"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Music Theory Analysis Panel -->
+                <div class="theory-panel">
+                    <div class="theory-header">
+                        <h2>🎵 Análisis Musical</h2>
+                    </div>
+                    
+                    <div class="theory-content">
+                        <div class="analysis-section">
+                            <div class="analysis-item">
+                                <span id="chord-analysis" class="analysis-display">Acorde: ---</span>
+                            </div>
+                            <div class="analysis-item">
+                                <span id="chord-suggestions" class="suggestions-display">Sugerencias: ---</span>
+                            </div>
+                        </div>
+                        
+                        <div class="theory-info">
+                            <div class="theory-stat">
+                                <span class="stat-label">Tonalidad:</span>
+                                <span id="current-key" class="stat-value">C Major</span>
+                            </div>
+                            <div class="theory-stat">
+                                <span class="stat-label">Escala:</span>
+                                <span id="current-scale" class="stat-value">Mayor</span>
+                            </div>
+                            <div class="theory-stat">
+                                <span class="stat-label">Progresión:</span>
+                                <span id="chord-progression" class="stat-value">I - vi - IV - V</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Galaxy Visualization (compartida) -->
+                <div class="galaxy-container composer-galaxy">
+                    <canvas id="galaxy-canvas-composer"></canvas>
+                    <div class="galaxy-controls">
+                        <button id="galaxy-reset-btn" class="galaxy-btn">🎯 Reset</button>
+                        <button id="galaxy-rotate-btn" class="galaxy-btn active">🔄 Auto-Rotate</button>
+                    </div>
                 </div>
             </section>
 
-            <!-- Analysis Mode -->
+            <!-- Analysis Mode (Sprint 4 - Placeholder) -->
             <section id="analysis-mode" class="mode-section">
                 <div class="analysis-panel">
-                    <h2>📊 Análisis Musical</h2>
-                    <p>Próximamente en Sprint 4...</p>
+                    <h2>📊 Análisis Musical Avanzado</h2>
+                    <div class="analysis-preview">
+                        <div class="feature-preview">
+                            <h3>🌊 Visualización de Ondas 2D</h3>
+                            <p>Análisis de forma de onda en tiempo real</p>
+                        </div>
+                        <div class="feature-preview">
+                            <h3>📈 Espectro 3D</h3>
+                            <p>Análisis frecuencial avanzado con FFT</p>
+                        </div>
+                        <div class="feature-preview">
+                            <h3>📁 Exportación</h3>
+                            <p>Guardar como MIDI, MP3 y JSON</p>
+                        </div>
+                    </div>
+                    <div class="coming-soon">
+                        <h3>🚀 Próximamente en Sprint 4...</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                        <p>75% Completado - Análisis y Exportación</p>
+                    </div>
                 </div>
             </section>
         </main>
 
-        <!-- Footer -->
+        <!-- Footer (Actualizado) -->
         <footer class="footer">
             <div class="info-panel">
                 <div class="note-info">
@@ -113,174 +314,115 @@
                     <span id="chord-info">Acorde: ---</span>
                 </div>
                 <div class="system-info">
-                    <span id="audio-status">🔊 Audio: Cargando...</span>
+                    <span id="audio-status">🔊 Audio: Listo</span>
                     <span id="galaxy-status">🌌 Galaxy: Cargando...</span>
+                    <span id="composer-status">🎼 Compositor: Preparando...</span>
+                    <span id="project-status">💾 Proyectos: Iniciando...</span>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" 
-            onload="console.log('✅ Three.js cargado')"
-            onerror="console.error('❌ Error cargando Three.js')"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"
-            onload="console.log('✅ Tone.js cargado')"
-            onerror="console.error('❌ Error cargando Tone.js')"></script>
+    <!-- Help Modal (NUEVO) -->
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🌌 Galaxy Piano - Ayuda</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <h3>🎹 Modo Live</h3>
+                    <p>Toca notas individuales o acordes usando números (1-88) o nombres musicales (C4, Em, etc.)</p>
+                    <ul>
+                        <li><strong>Nota simple:</strong> 40 (C4)</li>
+                        <li><strong>Acorde:</strong> 40,43,47 (C Major)</li>
+                        <li><strong>Nombres:</strong> C4,E4,G4</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>🎼 Modo Compositor</h3>
+                    <p>Crea secuencias musicales complejas con análisis de acordes en tiempo real.</p>
+                    <ul>
+                        <li><strong>Formato avanzado:</strong> C4+E4+G4@2.0v0.8</li>
+                        <li><strong>@2.0:</strong> Duración en beats</li>
+                        <li><strong>v0.8:</strong> Velocidad (0.1-1.0)</li>
+                        <li><strong>Múltiples acordes:</strong> Separar con comas</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>💾 Gestión de Proyectos</h3>
+                    <p>Guarda y organiza tus creaciones musicales.</p>
+                    <ul>
+                        <li><strong>Auto-guardado:</strong> Cada 30 segundos</li>
+                        <li><strong>Backup automático:</strong> Al eliminar proyectos</li>
+                        <li><strong>Exportación:</strong> JSON completo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Galaxy Piano Scripts en ORDEN CORRECTO -->
+    <!-- =========================================
+         SCRIPTS - ORDEN CRÍTICO PARA SPRINT 3
+         ========================================= -->
+    
+    <!-- 1. UTILIDADES Y HELPERS (Fundación) -->
     <script src="scripts/utils/helpers.js"></script>
+    
+    <!-- 2. AUDIO SYSTEM (Sprint 1) -->
     <script src="scripts/audio/noteMapping.js"></script>
     <script src="scripts/audio/audioEngine.js"></script>
-    <script src="scripts/visual/galaxyRender.js"></script>
+    
+    <!-- 3. VISUAL SYSTEM (Sprint 2) -->
+    <script src="scripts/visual/galaxyRenderer.js"></script>
     <script src="scripts/visual/starSystem.js"></script>
+    
+    <!-- 4. COMPOSER SYSTEM (Sprint 3) - ¡ESTOS SON LOS NUEVOS! -->
+    <script src="scripts/composer/sequencer.js"></script>
+    <script src="scripts/composer/musicTheory.js"></script>
+    <script src="scripts/composer/projectManager.js"></script>
+    
+    <!-- 5. MAIN APPLICATION (Debe ir AL FINAL) -->
     <script src="scripts/main.js"></script>
     
-    <!-- Event Listeners y Inicialización -->
+    <!-- Help button functionality -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 DOM cargado, configurando eventos...');
-            
-            // Event listeners para botones de test
-            document.getElementById('test-blue-btn')?.addEventListener('click', () => {
-                console.log('🧪 Test Azul - Nota 1');
-                if (window.galaxyPiano?.starSystem) {
-                    window.galaxyPiano.starSystem.testStar(1, 3.0);
-                } else {
-                    console.log('⚠️ StarSystem no disponible');
-                }
-            });
-            
-            document.getElementById('test-white-btn')?.addEventListener('click', () => {
-                console.log('🧪 Test Blanco - Nota 40');
-                if (window.galaxyPiano?.starSystem) {
-                    window.galaxyPiano.starSystem.testStar(40, 3.0);
-                } else {
-                    console.log('⚠️ StarSystem no disponible');
-                }
-            });
-            
-            document.getElementById('test-red-btn')?.addEventListener('click', () => {
-                console.log('🧪 Test Rojo - Nota 88');
-                if (window.galaxyPiano?.starSystem) {
-                    window.galaxyPiano.starSystem.testStar(88, 3.0);
-                } else {
-                    console.log('⚠️ StarSystem no disponible');
-                }
-            });
-            
-            document.getElementById('debug-btn')?.addEventListener('click', () => {
-                console.log('🔍 DEBUG INFO:');
-                console.log('================');
-                console.log('GalaxyPiano:', window.galaxyPiano ? '✅' : '❌');
-                console.log('AudioEngine:', window.galaxyPiano?.audioEngine ? '✅' : '❌');
-                console.log('GalaxyRenderer:', window.galaxyPiano?.galaxyRenderer ? '✅' : '❌');
-                console.log('StarSystem:', window.galaxyPiano?.starSystem ? '✅' : '❌');
-                
-                if (window.galaxyPiano?.starSystem) {
-                    window.galaxyPiano.starSystem.debugStars();
-                }
-                if (window.galaxyPiano?.galaxyRenderer) {
-                    console.table(window.galaxyPiano.galaxyRenderer.getInfo());
-                }
-            });
-            
-            // Controls
-            document.getElementById('auto-rotate-btn')?.addEventListener('click', () => {
-                if (window.galaxyPiano?.galaxyRenderer) {
-                    window.galaxyPiano.galaxyRenderer.toggleAutoRotate();
-                }
-            });
-            
-            document.getElementById('reset-view-btn')?.addEventListener('click', () => {
-                if (window.galaxyPiano?.galaxyRenderer) {
-                    window.galaxyPiano.galaxyRenderer.resetCamera();
-                }
-            });
-            
-            document.getElementById('test-star-btn')?.addEventListener('click', () => {
-                if (window.galaxyPiano?.starSystem) {
-                    window.galaxyPiano.starSystem.testStar(40, 3.0);
-                }
-            });
-            
-            // Mostrar controles cuando esté listo
-            setTimeout(() => {
-                if (window.galaxyPiano?.state?.galaxyReady) {
-                    document.getElementById('galaxy-controls').style.display = 'flex';
-                }
-            }, 3000);
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey) {
-                    switch(e.key) {
-                        case '1': 
-                            e.preventDefault();
-                            document.getElementById('test-blue-btn')?.click();
-                            break;
-                        case '2':
-                            e.preventDefault(); 
-                            document.getElementById('test-white-btn')?.click();
-                            break;
-                        case '3':
-                            e.preventDefault();
-                            document.getElementById('test-red-btn')?.click();
-                            break;
-                        case 'd':
-                            e.preventDefault();
-                            document.getElementById('debug-btn')?.click();
-                            break;
-                    }
-                }
-            });
-            
-            console.log('🎯 Event listeners configurados');
-            console.log('⌨️ Shortcuts: Ctrl+1,2,3 para tests, Ctrl+D para debug');
-        });
-        
-        // Actualizar indicadores
-        setInterval(() => {
-            if (window.galaxyPiano?.starSystem) {
-                const stats = window.galaxyPiano.starSystem.getStats();
-                const starsCount = document.getElementById('stars-count');
-                const starsIndicator = document.getElementById('stars-indicator');
-                
-                if (starsCount) {
-                    starsCount.textContent = stats.memory.activeStars;
-                }
-                
-                if (starsIndicator) {
-                    if (stats.memory.activeStars > 0) {
-                        starsIndicator.classList.add('active');
-                    } else {
-                        starsIndicator.classList.remove('active');
-                    }
-                }
+        // Help modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add help button to header
+            const headerContent = document.querySelector('.header-content');
+            if (headerContent) {
+                const helpButton = document.createElement('button');
+                helpButton.className = 'help-btn';
+                helpButton.innerHTML = '❓ Ayuda';
+                helpButton.onclick = () => {
+                    const modal = document.getElementById('help-modal');
+                    if (modal) modal.classList.remove('hidden');
+                };
+                headerContent.appendChild(helpButton);
             }
-        }, 500);
-    </script>
-    
-    <!-- Diagnóstico final -->
-    <script>
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                console.log('\n🎉 GALAXY PIANO SPRINT 2');
-                console.log('========================');
-                console.log('Three.js:', typeof THREE !== 'undefined' ? '✅' : '❌');
-                console.log('GalaxyRenderer:', typeof GalaxyRenderer !== 'undefined' ? '✅' : '❌');
-                console.log('StarSystem:', typeof StarSystem !== 'undefined' ? '✅' : '❌');
-                console.log('AudioEngine:', typeof AudioEngine !== 'undefined' ? '✅' : '❌');
-                console.log('GalaxyPiano:', window.galaxyPiano ? '✅' : '❌');
-                
-                if (window.galaxyPiano) {
-                    console.log('\n🚀 ¡SPRINT 2 LISTO!');
-                    console.log('Prueba escribir "40" y hacer clic en "🎵 Tocar"');
-                } else {
-                    console.log('\n❌ Hay problemas de inicialización');
-                }
-            }, 2000);
+            
+            // Close modal functionality
+            const closeBtn = document.querySelector('.modal-close');
+            if (closeBtn) {
+                closeBtn.onclick = () => {
+                    const modal = document.getElementById('help-modal');
+                    if (modal) modal.classList.add('hidden');
+                };
+            }
+            
+            // Close on outside click
+            const modal = document.getElementById('help-modal');
+            if (modal) {
+                modal.onclick = (e) => {
+                    if (e.target.id === 'help-modal') {
+                        e.target.classList.add('hidden');
+                    }
+                };
+            }
         });
     </script>
 </body>
