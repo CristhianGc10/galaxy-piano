@@ -1,0 +1,873 @@
+/* =================================
+   GALAXY PIANO - COMPOSER MODE CSS
+   Estilos específicos para el Compositor Musical
+   Sprint 3 - Modo Compositor Completo
+   ================================= */
+
+/* Composer Mode Layout */
+#composer-mode {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+        "projects sequencer"
+        "theory sequencer"
+        "galaxy galaxy";
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    min-height: calc(100vh - 200px);
+}
+
+/* Project Management Panel */
+.project-panel {
+    grid-area: projects;
+    background: var(--ui-glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-subtle);
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.project-header h2 {
+    color: var(--ui-text);
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.project-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.action-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+}
+
+.new-btn {
+    background: linear-gradient(45deg, var(--ui-primary), #00cc66);
+    border-color: var(--ui-primary);
+    color: white;
+}
+
+.save-btn {
+    background: linear-gradient(45deg, #0066cc, #0099ff);
+    border-color: #0066cc;
+    color: white;
+}
+
+.delete-btn {
+    background: linear-gradient(45deg, var(--ui-secondary), #cc0044);
+    border-color: var(--ui-secondary);
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Project Controls */
+.project-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.project-selector {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.project-selector label {
+    color: var(--ui-text);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.project-select {
+    padding: var(--spacing-sm);
+    border: 2px solid var(--ui-border);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--ui-text);
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+}
+
+.project-select:focus {
+    outline: none;
+    border-color: var(--ui-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+}
+
+.project-metadata {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.metadata-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.metadata-field label {
+    color: var(--ui-text);
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.metadata-input, .metadata-textarea {
+    padding: var(--spacing-sm);
+    border: 2px solid var(--ui-border);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--ui-text);
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+    font-family: var(--font-primary);
+}
+
+.metadata-textarea {
+    resize: vertical;
+    min-height: 60px;
+    max-height: 120px;
+}
+
+.metadata-input:focus, .metadata-textarea:focus {
+    outline: none;
+    border-color: var(--ui-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Sequencer Panel */
+.sequencer-panel {
+    grid-area: sequencer;
+    background: var(--ui-glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+}
+
+.sequencer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sequencer-header h2 {
+    color: var(--ui-text);
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.sequencer-controls {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.play-btn-large, .stop-btn-large {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 2px solid;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(10px);
+}
+
+.play-btn-large {
+    background: linear-gradient(45deg, var(--ui-primary), #00cc66);
+    border-color: var(--ui-primary);
+    color: white;
+}
+
+.stop-btn-large {
+    background: linear-gradient(45deg, var(--ui-secondary), #cc0044);
+    border-color: var(--ui-secondary);
+    color: white;
+}
+
+.play-btn-large:hover, .stop-btn-large:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Composer Input Panel */
+.composer-input-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.input-section label {
+    color: var(--ui-text);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.composer-input {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--ui-border);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--ui-text);
+    font-size: 0.95rem;
+    font-family: var(--font-mono);
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+    min-width: 300px;
+}
+
+.composer-input:focus {
+    outline: none;
+    border-color: var(--ui-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.composer-input::placeholder {
+    color: var(--ui-text-dim);
+    opacity: 0.7;
+    font-size: 0.85rem;
+}
+
+.add-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(45deg, var(--ui-accent), #ff6600);
+    border: 2px solid var(--ui-accent);
+    border-radius: var(--radius-md);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+}
+
+.add-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(255, 102, 0, 0.4);
+}
+
+.tempo-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 120px;
+}
+
+.tempo-section label {
+    color: var(--ui-text);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+#bpm-slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#bpm-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--ui-accent), #ff6600);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#bpm-display {
+    color: var(--ui-accent);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Sequencer Grid */
+.sequencer-grid-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+}
+
+.grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.grid-header h3 {
+    color: var(--ui-text);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.grid-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.grid-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--ui-text);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+}
+
+.grid-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--ui-primary);
+}
+
+.grid-btn.active {
+    background: var(--ui-primary);
+    border-color: var(--ui-primary);
+    color: white;
+}
+
+.sequencer-grid {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: var(--spacing-md);
+    overflow-y: auto;
+}
+
+.track-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.track-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.track-label {
+    min-width: 80px;
+    color: var(--ui-text);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: var(--spacing-xs);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    margin-right: var(--spacing-md);
+}
+
+.step-container {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+}
+
+.step {
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    position: relative;
+}
+
+.step:hover {
+    border-color: var(--ui-primary);
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.step.active {
+    background: var(--ui-primary);
+    border-color: var(--ui-primary);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.step.playing {
+    background: var(--ui-accent);
+    border-color: var(--ui-accent);
+    animation: pulse 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Track colors for differentiation */
+.track-row:nth-child(1) .step.active { background: #00ff88; border-color: #00ff88; }
+.track-row:nth-child(2) .step.active { background: #ff0080; border-color: #ff0080; }
+.track-row:nth-child(3) .step.active { background: #0088ff; border-color: #0088ff; }
+.track-row:nth-child(4) .step.active { background: #ff8800; border-color: #ff8800; }
+
+/* Music Theory Panel */
+.theory-panel {
+    grid-area: theory;
+    background: var(--ui-glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-subtle);
+}
+
+.theory-header h2 {
+    color: var(--ui-text);
+    font-size: 1.4rem;
+    margin: 0 0 var(--spacing-lg) 0;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theory-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.analysis-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.analysis-item {
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analysis-display {
+    color: var(--ui-primary);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.suggestions-display {
+    color: var(--ui-accent);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.theory-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.theory-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-label {
+    color: var(--ui-text-dim);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    color: var(--ui-text);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Composer Galaxy Container */
+.composer-galaxy {
+    grid-area: galaxy;
+    position: relative;
+    min-height: 300px;
+}
+
+.galaxy-controls {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    display: flex;
+    gap: var(--spacing-sm);
+    z-index: 10;
+}
+
+.galaxy-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--ui-text);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(10px);
+}
+
+.galaxy-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--ui-primary);
+}
+
+.galaxy-btn.active {
+    background: var(--ui-primary);
+    border-color: var(--ui-primary);
+    color: white;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--ui-glass);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-modal);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h2 {
+    color: var(--ui-text);
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--ui-text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.help-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.help-section h3 {
+    color: var(--ui-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.help-section p {
+    color: var(--ui-text);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.5;
+}
+
+.help-section ul {
+    color: var(--ui-text-dim);
+    padding-left: var(--spacing-lg);
+}
+
+.help-section li {
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.4;
+}
+
+.help-section strong {
+    color: var(--ui-accent);
+    font-family: var(--font-mono);
+}
+
+/* Help Button */
+.help-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--ui-text);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+}
+
+.help-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--ui-primary);
+}
+
+/* Version Badge */
+.version-badge {
+    background: linear-gradient(45deg, var(--ui-primary), var(--ui-secondary));
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Header Content Update */
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* Analysis Preview (Sprint 4) */
+.analysis-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.feature-preview {
+    padding: var(--spacing-lg);
+    background: var(--ui-glass);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.feature-preview h3 {
+    color: var(--ui-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-preview p {
+    color: var(--ui-text-dim);
+    font-size: 0.9rem;
+}
+
+.coming-soon {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: var(--ui-glass);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(15px);
+}
+
+.coming-soon h3 {
+    color: var(--ui-accent);
+    margin-bottom: var(--spacing-lg);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    margin: var(--spacing-md) 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ui-primary), var(--ui-accent));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.coming-soon p {
+    color: var(--ui-text);
+    margin-top: var(--spacing-md);
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    #composer-mode {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "projects"
+            "theory"
+            "sequencer"
+            "galaxy";
+    }
+    
+    .composer-input-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+    }
+    
+    .input-section {
+        flex: none;
+    }
+}
+
+@media (max-width: 768px) {
+    #composer-mode {
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+    }
+    
+    .project-header, .sequencer-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+    }
+    
+    .project-actions, .sequencer-controls {
+        justify-content: center;
+    }
+    
+    .step-container {
+        gap: 1px;
+    }
+    
+    .step {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .track-label {
+        min-width: 60px;
+        font-size: 0.8rem;
+    }
+    
+    .composer-input {
+        min-width: auto;
+        font-size: 0.9rem;
+    }
+    
+    .modal-content {
+        margin: var(--spacing-md);
+        padding: var(--spacing-lg);
+        max-width: calc(100% - 2 * var(--spacing-md));
+    }
+}
+
+@media (max-width: 480px) {
+    .project-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        text-align: center;
+    }
+    
+    .analysis-preview {
+        grid-template-columns: 1fr;
+    }
+    
+    .theory-stat {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-xs);
+    }
+}
+
+/* Dark Theme Enhancements */
+@media (prefers-color-scheme: dark) {
+    .sequencer-grid {
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .step {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .modal-content {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+}

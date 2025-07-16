@@ -1,72 +1,84 @@
 /**
- * GALAXY PIANO - MAIN APPLICATION
- * Sprint 2 - Integración Audio + Visual COMPLETA
+ * GALAXY PIANO - MAIN APPLICATION (Sprint 3 Update)
+ * Arquitectura completa con sistema de Compositor
+ * Sprint 3 Completo - Integración total
  */
 
 class GalaxyPiano {
     constructor() {
-        this.version = '2.0.0';
+        this.version = '1.3.0'; // Sprint 3
         this.currentMode = 'live';
         this.isInitialized = false;
         
-        // Módulos principales
+        // Módulos principales (Sprint 1 & 2)
         this.audioEngine = null;
         this.galaxyRenderer = null;
         this.starSystem = null;
         
-        // Estado de la aplicación
+        // Nuevos módulos (Sprint 3)
+        this.sequencer = null;
+        this.musicTheory = null;
+        this.projectManager = null;
+        
+        // Estado de la aplicación expandido
         this.state = {
             volume: 50,
             currentNotes: [],
             isPlaying: false,
             audioReady: false,
             galaxyReady: false,
-            starSystemReady: false
+            composerReady: false,
+            currentProject: null,
+            autoSave: true
         };
         
-        // Referencias DOM
+        // Referencias DOM expandidas
         this.elements = {};
         
-        console.log('🌌 Galaxy Piano v' + this.version + ' iniciando...');
-        console.log('🎯 Sprint 2: Sistema de Estrellas Musicales');
+        console.log('🌌 Galaxy Piano v' + this.version + ' iniciando - Sprint 3 Edition');
     }
     
     /**
-     * Inicialización completa de la aplicación
+     * Inicialización completa de la aplicación (Sprints 1-3)
      */
     async init() {
         try {
-            console.log('🚀 Iniciando Galaxy Piano Sprint 2...');
+            console.log('🚀 Iniciando Galaxy Piano - Sprint 3 Complete...');
             
-            // 1. Verificar dependencias
-            this.checkDependencies();
-            
-            // 2. Obtener referencias DOM
+            // 1. Obtener referencias DOM
             this.initDOMReferences();
             
-            // 3. Configurar event listeners
+            // 2. Configurar event listeners
             this.setupEventListeners();
             
-            // 4. Inicializar audio engine
+            // 3. Inicializar audio engine (Sprint 1)
             await this.initAudioEngine();
             
-            // 5. Inicializar galaxy renderer
+            // 4. Inicializar galaxy renderer (Sprint 2)
             await this.initGalaxyRenderer();
             
-            // 6. Inicializar star system
-            await this.initStarSystem();
+            // 5. Inicializar star system (Sprint 2)
+            this.initStarSystem();
             
-            // 7. Configurar interfaz inicial
-            this.setupInitialUI();
+            // 6. Inicializar sequencer musical (Sprint 3)
+            await this.initSequencer();
+            
+            // 7. Inicializar motor de teoría musical (Sprint 3)
+            this.initMusicTheory();
+            
+            // 8. Inicializar gestor de proyectos (Sprint 3)
+            await this.initProjectManager();
+            
+            // 9. Configurar interfaz completa
+            this.setupCompleteUI();
+            
+            // 10. Ejecutar tests de integración
+            await this.runIntegrationTests();
             
             this.isInitialized = true;
-            console.log('✅ Galaxy Piano Sprint 2 inicializado correctamente');
+            console.log('✅ Galaxy Piano Sprint 3 inicializado correctamente');
             
             this.updateSystemStatus();
-            this.hideLoading();
-            
-            // Test inicial
-            setTimeout(() => this.runInitialTest(), 1000);
             
         } catch (error) {
             console.error('❌ Error inicializando Galaxy Piano:', error);
@@ -75,35 +87,7 @@ class GalaxyPiano {
     }
     
     /**
-     * Verificar que todas las dependencias estén cargadas
-     */
-    checkDependencies() {
-        const dependencies = {
-            'Three.js': typeof THREE !== 'undefined',
-            'AudioEngine': typeof AudioEngine !== 'undefined',
-            'GalaxyRenderer': typeof GalaxyRenderer !== 'undefined',
-            'StarSystem': typeof StarSystem !== 'undefined',
-            'NoteMapping': typeof window.NoteMapping !== 'undefined'
-        };
-        
-        console.log('🔍 Verificando dependencias:');
-        let allOk = true;
-        
-        Object.entries(dependencies).forEach(([name, available]) => {
-            const status = available ? '✅' : '❌';
-            console.log(`   ${status} ${name}`);
-            if (!available) allOk = false;
-        });
-        
-        if (!allOk) {
-            throw new Error('Dependencias faltantes. Verificar carga de scripts.');
-        }
-        
-        console.log('✅ Todas las dependencias disponibles');
-    }
-    
-    /**
-     * Obtener referencias a elementos DOM
+     * Referencias DOM actualizadas para Sprint 3
      */
     initDOMReferences() {
         this.elements = {
@@ -115,12 +99,30 @@ class GalaxyPiano {
             composerModeSection: document.getElementById('composer-mode'),
             analysisModeSection: document.getElementById('analysis-mode'),
             
-            // Controls
+            // Live mode controls
             noteInput: document.getElementById('note-input'),
             playButton: document.getElementById('play-btn'),
             stopButton: document.getElementById('stop-btn'),
             volumeSlider: document.getElementById('volume'),
             volumeDisplay: document.getElementById('volume-display'),
+            
+            // Composer mode controls (nuevos)
+            composerNoteInput: document.getElementById('composer-note-input'),
+            composerPlayButton: document.getElementById('composer-play-btn'),
+            composerStopButton: document.getElementById('composer-stop-btn'),
+            bpmSlider: document.getElementById('bpm-slider'),
+            bpmDisplay: document.getElementById('bpm-display'),
+            sequencerGrid: document.getElementById('sequencer-grid'),
+            chordAnalysis: document.getElementById('chord-analysis'),
+            chordSuggestions: document.getElementById('chord-suggestions'),
+            
+            // Project management (nuevos)
+            projectSelect: document.getElementById('project-select'),
+            newProjectButton: document.getElementById('new-project-btn'),
+            saveProjectButton: document.getElementById('save-project-btn'),
+            deleteProjectButton: document.getElementById('delete-project-btn'),
+            projectName: document.getElementById('project-name'),
+            projectDescription: document.getElementById('project-description'),
             
             // Galaxy
             galaxyCanvas: document.getElementById('galaxy-canvas'),
@@ -130,22 +132,19 @@ class GalaxyPiano {
             currentNotesDisplay: document.getElementById('current-notes'),
             chordInfoDisplay: document.getElementById('chord-info'),
             audioStatusDisplay: document.getElementById('audio-status'),
-            galaxyStatusDisplay: document.getElementById('galaxy-status')
+            galaxyStatusDisplay: document.getElementById('galaxy-status'),
+            composerStatusDisplay: document.getElementById('composer-status'),
+            projectStatusDisplay: document.getElementById('project-status')
         };
         
-        // Verificar elementos críticos
-        if (!this.elements.galaxyCanvas) {
-            throw new Error('Canvas #galaxy-canvas no encontrado');
-        }
-        
-        console.log('📋 Referencias DOM obtenidas y verificadas');
+        console.log('📋 Referencias DOM expandidas obtenidas');
     }
     
     /**
-     * Configurar event listeners
+     * Event listeners expandidos para Sprint 3
      */
     setupEventListeners() {
-        // Navigation
+        // Navigation existente
         this.elements.navButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const mode = e.target.dataset.mode;
@@ -153,50 +152,101 @@ class GalaxyPiano {
             });
         });
         
-        // Play button
-        this.elements.playButton.addEventListener('click', () => {
+        // Live mode existente
+        this.elements.playButton?.addEventListener('click', () => {
             this.playNotes();
         });
         
-        // Stop button
-        this.elements.stopButton.addEventListener('click', () => {
+        this.elements.stopButton?.addEventListener('click', () => {
             this.stopNotes();
         });
         
-        // Note input - Enter key
-        this.elements.noteInput.addEventListener('keypress', (e) => {
+        this.elements.noteInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.playNotes();
             }
         });
         
-        // Volume control
-        this.elements.volumeSlider.addEventListener('input', (e) => {
+        this.elements.volumeSlider?.addEventListener('input', (e) => {
             this.updateVolume(parseInt(e.target.value));
         });
         
-        // Galaxy canvas resize
+        // Composer mode (nuevos)
+        this.elements.composerPlayButton?.addEventListener('click', () => {
+            this.playComposerSequence();
+        });
+        
+        this.elements.composerStopButton?.addEventListener('click', () => {
+            this.stopComposerSequence();
+        });
+        
+        this.elements.composerNoteInput?.addEventListener('input', (e) => {
+            this.analyzeComposerInput(e.target.value);
+        });
+        
+        this.elements.composerNoteInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.addToSequence();
+            }
+        });
+        
+        this.elements.bpmSlider?.addEventListener('input', (e) => {
+            this.updateBPM(parseInt(e.target.value));
+        });
+        
+        // Project management (nuevos)
+        this.elements.newProjectButton?.addEventListener('click', () => {
+            this.createNewProject();
+        });
+        
+        this.elements.saveProjectButton?.addEventListener('click', () => {
+            this.saveCurrentProject();
+        });
+        
+        this.elements.deleteProjectButton?.addEventListener('click', () => {
+            this.deleteCurrentProject();
+        });
+        
+        this.elements.projectSelect?.addEventListener('change', (e) => {
+            this.loadSelectedProject(e.target.value);
+        });
+        
+        this.elements.projectName?.addEventListener('input', (e) => {
+            this.updateProjectMetadata('name', e.target.value);
+        });
+        
+        this.elements.projectDescription?.addEventListener('input', (e) => {
+            this.updateProjectMetadata('description', e.target.value);
+        });
+        
+        // Window events
         window.addEventListener('resize', () => {
             if (this.galaxyRenderer) {
                 this.galaxyRenderer.handleResize();
             }
         });
         
-        console.log('🎧 Event listeners configurados');
+        window.addEventListener('beforeunload', () => {
+            this.handleAppExit();
+        });
+        
+        console.log('🎧 Event listeners expandidos configurados');
     }
     
     /**
-     * Inicializar motor de audio
+     * Inicializar audio engine (Sprint 1 - sin cambios)
      */
     async initAudioEngine() {
         try {
-            console.log('🔊 Inicializando Audio Engine...');
+            if (typeof AudioEngine === 'undefined') {
+                throw new Error('AudioEngine no está disponible');
+            }
             
             this.audioEngine = new AudioEngine();
             await this.audioEngine.init();
             
             this.state.audioReady = true;
-            console.log('✅ Audio Engine listo');
+            console.log('🔊 Audio Engine inicializado');
             
             this.updateAudioStatus('Listo');
             
@@ -208,95 +258,142 @@ class GalaxyPiano {
     }
     
     /**
-     * Inicializar renderer de galaxia
+     * Inicializar galaxy renderer (Sprint 2 - mejorado)
      */
     async initGalaxyRenderer() {
         try {
-            console.log('🌌 Inicializando Galaxy Renderer...');
-            this.updateGalaxyStatus('Inicializando espacio 3D...');
+            if (typeof GalaxyRenderer === 'undefined') {
+                throw new Error('GalaxyRenderer no está disponible');
+            }
             
-            // Crear instancia del renderer
             this.galaxyRenderer = new GalaxyRenderer(this.elements.galaxyCanvas);
-            
-            // Inicializar
             await this.galaxyRenderer.init();
             
             this.state.galaxyReady = true;
-            console.log('✅ Galaxy Renderer listo');
-            
-            this.updateGalaxyStatus('Espacio 3D listo');
-            
-        } catch (error) {
-            console.error('❌ Error inicializando galaxy renderer:', error);
-            this.updateGalaxyStatus('Error: ' + error.message);
-            throw error;
-        }
-    }
-    
-    /**
-     * Inicializar sistema de estrellas
-     */
-    async initStarSystem() {
-        try {
-            console.log('⭐ Inicializando Star System...');
-            this.updateGalaxyStatus('Configurando estrellas...');
-            
-            if (!this.galaxyRenderer) {
-                throw new Error('GalaxyRenderer debe estar inicializado primero');
-            }
-            
-            // Crear instancia del sistema de estrellas
-            this.starSystem = new StarSystem(this.galaxyRenderer);
-            
-            this.state.starSystemReady = true;
-            console.log('✅ Star System listo');
+            console.log('🌌 Galaxy Renderer inicializado');
             
             this.updateGalaxyStatus('Listo');
             
         } catch (error) {
-            console.error('❌ Error inicializando star system:', error);
+            console.error('❌ Error inicializando galaxy:', error);
             this.updateGalaxyStatus('Error: ' + error.message);
-            throw error;
+            this.showError('Error de galaxia: ' + error.message);
         }
     }
     
     /**
-     * Configurar interfaz inicial
+     * Inicializar star system (Sprint 2 - sin cambios)
      */
-    setupInitialUI() {
-        // Volumen inicial
+    initStarSystem() {
+        try {
+            if (typeof StarSystem === 'undefined') {
+                throw new Error('StarSystem no está disponible');
+            }
+            
+            this.starSystem = new StarSystem(this.galaxyRenderer);
+            console.log('⭐ Star System inicializado');
+            
+        } catch (error) {
+            console.error('❌ Error inicializando star system:', error);
+        }
+    }
+    
+    /**
+     * Inicializar sequencer musical (Sprint 3 - NUEVO)
+     */
+    async initSequencer() {
+        try {
+            if (typeof MusicalSequencer === 'undefined') {
+                throw new Error('MusicalSequencer no está disponible');
+            }
+            
+            this.sequencer = new MusicalSequencer(this.audioEngine, this.starSystem);
+            
+            console.log('🎼 Musical Sequencer inicializado');
+            this.updateComposerStatus('Sequencer listo');
+            
+        } catch (error) {
+            console.error('❌ Error inicializando sequencer:', error);
+            this.updateComposerStatus('Error: ' + error.message);
+        }
+    }
+    
+    /**
+     * Inicializar motor de teoría musical (Sprint 3 - NUEVO)
+     */
+    initMusicTheory() {
+        try {
+            if (typeof MusicTheoryEngine === 'undefined') {
+                throw new Error('MusicTheoryEngine no está disponible');
+            }
+            
+            this.musicTheory = new MusicTheoryEngine();
+            
+            console.log('🎵 Music Theory Engine inicializado');
+            
+        } catch (error) {
+            console.error('❌ Error inicializando music theory:', error);
+        }
+    }
+    
+    /**
+     * Inicializar gestor de proyectos (Sprint 3 - NUEVO)
+     */
+    async initProjectManager() {
+        try {
+            if (typeof ProjectManager === 'undefined') {
+                throw new Error('ProjectManager no está disponible');
+            }
+            
+            this.projectManager = new ProjectManager(
+                this.audioEngine,
+                this.galaxyRenderer,
+                this.starSystem,
+                this.sequencer,
+                this.musicTheory
+            );
+            
+            // Cargar proyecto inicial
+            const projects = this.projectManager.getProjectsList();
+            if (projects.length > 0) {
+                const currentProject = projects.find(p => p.isCurrent) || projects[0];
+                await this.projectManager.loadProject(currentProject.id);
+                this.state.currentProject = currentProject.id;
+            }
+            
+            this.updateProjectsUI();
+            
+            console.log('💾 Project Manager inicializado');
+            this.updateProjectStatus('Listo');
+            
+        } catch (error) {
+            console.error('❌ Error inicializando project manager:', error);
+            this.updateProjectStatus('Error: ' + error.message);
+        }
+    }
+    
+    /**
+     * Configurar interfaz completa (Sprint 3)
+     */
+    setupCompleteUI() {
+        // Configuración básica
         this.updateVolume(this.state.volume);
-        
-        // Modo inicial
         this.switchMode('live');
-        
-        // Status inicial
         this.updateNoteDisplay([]);
         this.updateChordInfo('---');
         
-        console.log('🎨 UI inicial configurada');
-    }
-    
-    /**
-     * Test inicial del sistema
-     */
-    runInitialTest() {
-        console.log('🧪 Ejecutando test inicial...');
+        // Configuración de composer
+        this.updateBPM(120);
+        this.updateComposerStatus('Listo');
         
-        if (this.state.audioReady && this.state.galaxyReady && this.state.starSystemReady) {
-            console.log('✅ Todos los sistemas listos');
-            console.log('🎯 Prueba escribir "40" y hacer clic en "🎵 Tocar"');
-            console.log('🎨 O usa los botones de test de colores');
-        } else {
-            console.log('⚠️ Algunos sistemas no están listos:');
-            console.log('   Audio:', this.state.audioReady ? '✅' : '❌');
-            console.log('   Galaxy:', this.state.galaxyReady ? '✅' : '❌');
-            console.log('   Stars:', this.state.starSystemReady ? '✅' : '❌');
-        }
+        // Configuración inicial de proyectos
+        this.updateProjectsUI();
+        
+        console.log('🎨 UI completa configurada');
     }
     
     /**
-     * Cambiar modo de la aplicación
+     * Cambiar modo de aplicación (actualizado)
      */
     switchMode(mode) {
         if (!['live', 'composer', 'analysis'].includes(mode)) {
@@ -305,6 +402,12 @@ class GalaxyPiano {
         }
         
         this.currentMode = mode;
+        
+        // Detener reproducción al cambiar modo
+        this.stopNotes();
+        if (this.sequencer) {
+            this.sequencer.stopSequence();
+        }
         
         // Actualizar navegación
         this.elements.navButtons.forEach(btn => {
@@ -321,14 +424,40 @@ class GalaxyPiano {
             targetSection.classList.add('active');
         }
         
-        // Actualizar clase del body para estilos específicos
+        // Actualizar clase del body
         document.body.className = 'galaxy-mode-' + mode;
+        
+        // Configuraciones específicas por modo
+        if (mode === 'composer') {
+            this.initComposerMode();
+        } else if (mode === 'analysis') {
+            this.initAnalysisMode();
+        }
         
         console.log('🔄 Modo cambiado a:', mode);
     }
     
     /**
-     * Reproducir notas con integración audio-visual completa
+     * Inicializar modo compositor (NUEVO)
+     */
+    initComposerMode() {
+        // Actualizar UI de composer
+        this.updateSequencerGrid();
+        this.updateChordAnalysis();
+        this.updateChordSuggestions();
+        
+        console.log('🎼 Modo Compositor inicializado');
+    }
+    
+    /**
+     * Inicializar modo análisis (placeholder para Sprint 4)
+     */
+    initAnalysisMode() {
+        console.log('📊 Modo Análisis preparado (Sprint 4)');
+    }
+    
+    /**
+     * Reproducir notas desde input (Live mode - sin cambios)
      */
     async playNotes() {
         if (!this.state.audioReady) {
@@ -343,7 +472,6 @@ class GalaxyPiano {
         }
         
         try {
-            // Parsear notas del input
             const notes = this.parseNoteInput(input);
             
             if (notes.length === 0) {
@@ -351,7 +479,6 @@ class GalaxyPiano {
                 return;
             }
             
-            // Validar rango
             const invalidNotes = notes.filter(note => note < 1 || note > 88);
             if (invalidNotes.length > 0) {
                 this.showError('Notas fuera de rango (1-88): ' + invalidNotes.join(', '));
@@ -360,25 +487,27 @@ class GalaxyPiano {
             
             console.log('🎵 Reproduciendo notas:', notes);
             
-            // 1. REPRODUCIR AUDIO
-            await this.audioEngine.playNotes(notes, 3.0); // 3 segundos
+            // Reproducir con audio engine
+            await this.audioEngine.playNotes(notes);
             
-            // 2. CREAR ESTRELLAS (integración visual)
-            if (this.starSystem && this.state.starSystemReady) {
-                const stars = this.starSystem.createStars(notes, 3.0, 1.0);
-                console.log('⭐ Estrellas creadas:', stars.length);
-            } else {
-                console.log('⚠️ StarSystem no disponible');
+            // Crear estrellas visuales
+            if (this.starSystem) {
+                this.starSystem.createStars(notes, 2.0, 0.8);
             }
             
-            // 3. ACTUALIZAR UI
+            // Analizar acordes con music theory
+            if (this.musicTheory && notes.length > 1) {
+                const analysis = this.musicTheory.analyzeChord(notes);
+                if (analysis.bestMatch) {
+                    this.updateChordInfo(analysis.bestMatch.displayName);
+                }
+            }
+            
+            // Actualizar estado
             this.state.currentNotes = notes;
             this.state.isPlaying = true;
             
             this.updateNoteDisplay(notes);
-            this.detectAndDisplayChord(notes);
-            
-            console.log('✅ Reproducción completa: audio + visual');
             
         } catch (error) {
             console.error('❌ Error reproduciendo notas:', error);
@@ -387,35 +516,431 @@ class GalaxyPiano {
     }
     
     /**
-     * Detener todas las notas y estrellas
+     * Reproducir secuencia del compositor (NUEVO)
      */
-    stopNotes() {
-        console.log('⏹️ Deteniendo todo...');
-        
-        // 1. Detener audio
-        if (this.audioEngine) {
-            this.audioEngine.stopAll();
+    async playComposerSequence() {
+        if (!this.sequencer) {
+            this.showError('Sequencer no está listo');
+            return;
         }
         
-        // 2. Detener estrellas
-        if (this.starSystem) {
-            this.starSystem.stopAll();
+        try {
+            await this.sequencer.playSequence();
+            console.log('▶️ Secuencia del compositor iniciada');
+        } catch (error) {
+            console.error('❌ Error reproduciendo secuencia:', error);
+            this.showError('Error en secuencia: ' + error.message);
         }
-        
-        this.state.isPlaying = false;
-        this.state.currentNotes = [];
-        
-        this.updateNoteDisplay([]);
-        this.updateChordInfo('---');
-        
-        console.log('✅ Todo detenido');
     }
     
     /**
-     * Parsear input de notas
+     * Detener secuencia del compositor (NUEVO)
      */
+    stopComposerSequence() {
+        if (this.sequencer) {
+            this.sequencer.stopSequence();
+        }
+        console.log('⏹️ Secuencia del compositor detenida');
+    }
+    
+    /**
+     * Analizar entrada del compositor en tiempo real (NUEVO)
+     */
+    analyzeComposerInput(input) {
+        if (!this.sequencer || !this.musicTheory || !input.trim()) {
+            this.updateChordAnalysis('---');
+            this.updateChordSuggestions([]);
+            return;
+        }
+        
+        try {
+            // Parsear entrada
+            const parsed = this.sequencer.parseMusicalInput(input);
+            
+            if (parsed.success && parsed.chords.length > 0) {
+                // Analizar primer acorde
+                const firstChord = parsed.chords[0];
+                const noteNumbers = firstChord.notes.map(note => note.number);
+                
+                const analysis = this.musicTheory.analyzeChord(noteNumbers);
+                
+                if (analysis.bestMatch) {
+                    this.updateChordAnalysis(analysis.bestMatch.displayName, analysis.confidence);
+                    this.updateChordSuggestions(analysis.suggestions);
+                } else {
+                    this.updateChordAnalysis('No identificado');
+                    this.updateChordSuggestions([]);
+                }
+            } else if (parsed.success && parsed.notes.length > 1) {
+                // Analizar como acorde simple
+                const noteNumbers = parsed.notes.map(note => note.number);
+                const analysis = this.musicTheory.analyzeChord(noteNumbers);
+                
+                if (analysis.bestMatch) {
+                    this.updateChordAnalysis(analysis.bestMatch.displayName, analysis.confidence);
+                    this.updateChordSuggestions(analysis.suggestions);
+                }
+            } else {
+                this.updateChordAnalysis('---');
+                this.updateChordSuggestions([]);
+            }
+            
+        } catch (error) {
+            console.error('❌ Error analizando entrada:', error);
+        }
+    }
+    
+    /**
+     * Añadir entrada a la secuencia (NUEVO)
+     */
+    addToSequence() {
+        const input = this.elements.composerNoteInput?.value.trim();
+        if (!input || !this.sequencer) {
+            return;
+        }
+        
+        try {
+            const result = this.sequencer.createSequenceFromInput(input, 0);
+            
+            if (result.success) {
+                this.updateSequencerGrid();
+                this.elements.composerNoteInput.value = '';
+                this.showSuccess('Secuencia añadida correctamente');
+            } else {
+                this.showError(result.error);
+            }
+            
+        } catch (error) {
+            console.error('❌ Error añadiendo a secuencia:', error);
+            this.showError('Error en secuencia: ' + error.message);
+        }
+    }
+    
+    /**
+     * Actualizar BPM (NUEVO)
+     */
+    updateBPM(bpm) {
+        const clampedBPM = Math.max(60, Math.min(200, bpm));
+        
+        if (this.sequencer) {
+            this.sequencer.state.currentBPM = clampedBPM;
+        }
+        
+        if (this.elements.bpmSlider) {
+            this.elements.bpmSlider.value = clampedBPM;
+        }
+        
+        if (this.elements.bpmDisplay) {
+            this.elements.bpmDisplay.textContent = clampedBPM + ' BPM';
+        }
+        
+        console.log('🥁 BPM actualizado:', clampedBPM);
+    }
+    
+    /**
+     * Crear nuevo proyecto (NUEVO)
+     */
+    async createNewProject() {
+        if (!this.projectManager) return;
+        
+        try {
+            const projectName = prompt('Nombre del nuevo proyecto:') || 'Nuevo Proyecto';
+            
+            const newProject = this.projectManager.createProject({
+                name: projectName,
+                description: 'Nuevo proyecto musical'
+            });
+            
+            await this.projectManager.loadProject(newProject.id);
+            this.state.currentProject = newProject.id;
+            
+            this.updateProjectsUI();
+            this.showSuccess('Proyecto creado: ' + projectName);
+            
+        } catch (error) {
+            console.error('❌ Error creando proyecto:', error);
+            this.showError('Error creando proyecto: ' + error.message);
+        }
+    }
+    
+    /**
+     * Guardar proyecto actual (NUEVO)
+     */
+    async saveCurrentProject() {
+        if (!this.projectManager || !this.state.currentProject) return;
+        
+        try {
+            await this.projectManager.saveCurrentProject();
+            this.showSuccess('Proyecto guardado');
+            
+        } catch (error) {
+            console.error('❌ Error guardando proyecto:', error);
+            this.showError('Error guardando: ' + error.message);
+        }
+    }
+    
+    /**
+     * Eliminar proyecto actual (NUEVO)
+     */
+    async deleteCurrentProject() {
+        if (!this.projectManager || !this.state.currentProject) return;
+        
+        const confirmDelete = confirm('¿Estás seguro de eliminar este proyecto?');
+        if (!confirmDelete) return;
+        
+        try {
+            await this.projectManager.deleteProject(this.state.currentProject);
+            this.state.currentProject = null;
+            
+            this.updateProjectsUI();
+            this.showSuccess('Proyecto eliminado');
+            
+        } catch (error) {
+            console.error('❌ Error eliminando proyecto:', error);
+            this.showError('Error eliminando: ' + error.message);
+        }
+    }
+    
+    /**
+     * Cargar proyecto seleccionado (NUEVO)
+     */
+    async loadSelectedProject(projectId) {
+        if (!this.projectManager || !projectId) return;
+        
+        try {
+            await this.projectManager.loadProject(projectId);
+            this.state.currentProject = projectId;
+            
+            this.updateProjectsUI();
+            this.showSuccess('Proyecto cargado');
+            
+        } catch (error) {
+            console.error('❌ Error cargando proyecto:', error);
+            this.showError('Error cargando: ' + error.message);
+        }
+    }
+    
+    /**
+     * Actualizar metadatos del proyecto (NUEVO)
+     */
+    updateProjectMetadata(field, value) {
+        if (!this.projectManager || !this.state.currentProject) return;
+        
+        try {
+            const project = this.projectManager.state.projects.get(this.state.currentProject);
+            if (project) {
+                project[field] = value;
+                project.modifiedAt = Date.now();
+                this.projectManager.markDirty();
+            }
+            
+        } catch (error) {
+            console.error('❌ Error actualizando metadata:', error);
+        }
+    }
+    
+    /**
+     * Actualizar UI de proyectos (NUEVO)
+     */
+    updateProjectsUI() {
+        if (!this.projectManager) return;
+        
+        try {
+            const projects = this.projectManager.getProjectsList();
+            
+            // Actualizar selector de proyectos
+            if (this.elements.projectSelect) {
+                this.elements.projectSelect.innerHTML = '';
+                
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project.id;
+                    option.textContent = project.name;
+                    option.selected = project.id === this.state.currentProject;
+                    this.elements.projectSelect.appendChild(option);
+                });
+            }
+            
+            // Actualizar campos del proyecto actual
+            if (this.state.currentProject) {
+                const currentProject = projects.find(p => p.id === this.state.currentProject);
+                
+                if (currentProject) {
+                    if (this.elements.projectName) {
+                        this.elements.projectName.value = currentProject.name;
+                    }
+                    if (this.elements.projectDescription) {
+                        this.elements.projectDescription.value = currentProject.description;
+                    }
+                }
+            }
+            
+        } catch (error) {
+            console.error('❌ Error actualizando UI de proyectos:', error);
+        }
+    }
+    
+    /**
+     * Actualizar grid del secuenciador (NUEVO)
+     */
+    updateSequencerGrid() {
+        // Placeholder para visualización del secuenciador
+        // Se implementará completamente en la UI
+        console.log('🎛️ Grid del secuenciador actualizado');
+    }
+    
+    /**
+     * Actualizar análisis de acordes (NUEVO)
+     */
+    updateChordAnalysis(chordName = '---', confidence = 0) {
+        if (this.elements.chordAnalysis) {
+            const confidenceText = confidence > 0 ? ` (${Math.round(confidence * 100)}%)` : '';
+            this.elements.chordAnalysis.textContent = `Acorde: ${chordName}${confidenceText}`;
+        }
+    }
+    
+    /**
+     * Actualizar sugerencias de acordes (NUEVO)
+     */
+    updateChordSuggestions(suggestions = []) {
+        if (this.elements.chordSuggestions) {
+            if (suggestions.length === 0) {
+                this.elements.chordSuggestions.textContent = 'Sugerencias: ---';
+            } else {
+                const suggestionText = suggestions.slice(0, 3).map(s => s.chord).join(', ');
+                this.elements.chordSuggestions.textContent = `Sugerencias: ${suggestionText}`;
+            }
+        }
+    }
+    
+    /**
+     * Actualizar estado del compositor (NUEVO)
+     */
+    updateComposerStatus(status = 'Listo') {
+        if (this.elements.composerStatusDisplay) {
+            this.elements.composerStatusDisplay.textContent = '🎼 Compositor: ' + status;
+        }
+    }
+    
+    /**
+     * Actualizar estado de proyectos (NUEVO)
+     */
+    updateProjectStatus(status = 'Listo') {
+        if (this.elements.projectStatusDisplay) {
+            this.elements.projectStatusDisplay.textContent = '💾 Proyectos: ' + status;
+        }
+    }
+    
+    /**
+     * Ejecutar tests de integración (NUEVO)
+     */
+    async runIntegrationTests() {
+        if (!this.isTestModeEnabled()) return;
+        
+        console.log('🧪 Ejecutando tests de integración...');
+        
+        const testResults = {
+            audio: false,
+            galaxy: false,
+            sequencer: false,
+            musicTheory: false,
+            projectManager: false
+        };
+        
+        try {
+            // Test Audio Engine
+            if (this.audioEngine) {
+                testResults.audio = await this.audioEngine.testNote(40, 0.5);
+            }
+            
+            // Test Sequencer
+            if (this.sequencer) {
+                const sequencerTest = await this.sequencer.testSequencer();
+                testResults.sequencer = sequencerTest.parser && sequencerTest.sequencer;
+            }
+            
+            // Test Music Theory
+            if (this.musicTheory) {
+                const musicTest = await this.musicTheory.testMusicTheory();
+                testResults.musicTheory = musicTest.chordDetection && musicTest.suggestions;
+            }
+            
+            // Test Project Manager
+            if (this.projectManager) {
+                const projectTest = await this.projectManager.testProjectManager();
+                testResults.projectManager = Object.values(projectTest).every(r => r === true);
+            }
+            
+            // Test Galaxy (básico)
+            testResults.galaxy = this.state.galaxyReady;
+            
+            console.log('🎯 Resultados de integración:', testResults);
+            
+            const allPassed = Object.values(testResults).every(result => result === true);
+            if (allPassed) {
+                console.log('✅ Todos los tests de integración PASARON');
+            } else {
+                console.log('⚠️ Algunos tests de integración FALLARON');
+            }
+            
+        } catch (error) {
+            console.error('❌ Error en tests de integración:', error);
+        }
+    }
+    
+    /**
+     * Verificar si el modo de test está habilitado
+     */
+    isTestModeEnabled() {
+        return window.location.hash.includes('test') || window.location.search.includes('test');
+    }
+    
+    /**
+     * Manejar salida de aplicación (NUEVO)
+     */
+    handleAppExit() {
+        if (this.projectManager && this.state.currentProject) {
+            // Auto-guardado al salir
+            this.projectManager.saveCurrentProject().catch(console.error);
+        }
+    }
+    
+    /**
+     * Mostrar mensaje de éxito (NUEVO)
+     */
+    showSuccess(message) {
+        console.log('✅ Éxito:', message);
+        // TODO: Implementar notificaciones visuales
+    }
+    
+    /**
+     * Obtener estadísticas completas del sistema (actualizado)
+     */
+    getSystemStats() {
+        const stats = {
+            version: this.version,
+            mode: this.currentMode,
+            initialized: this.isInitialized,
+            
+            // Módulos principales
+            audio: this.audioEngine?.getStats() || null,
+            galaxy: this.galaxyRenderer?.getInfo() || null,
+            stars: this.starSystem?.getStats() || null,
+            
+            // Nuevos módulos Sprint 3
+            sequencer: this.sequencer?.getStats() || null,
+            musicTheory: this.musicTheory?.getStats() || null,
+            projects: this.projectManager?.getStats() || null,
+            
+            // Estado de la aplicación
+            state: this.state
+        };
+        
+        return stats;
+    }
+    
+    // Métodos existentes sin cambios...
     parseNoteInput(input) {
-        // Soportar formatos: "40", "40,43,47", "40 43 47"
         const cleanInput = input.replace(/\s+/g, ',');
         const noteStrings = cleanInput.split(',').filter(s => s.length > 0);
         
@@ -430,9 +955,20 @@ class GalaxyPiano {
         return notes;
     }
     
-    /**
-     * Actualizar volumen
-     */
+    stopNotes() {
+        if (this.audioEngine) {
+            this.audioEngine.stopAll();
+        }
+        
+        this.state.isPlaying = false;
+        this.state.currentNotes = [];
+        
+        this.updateNoteDisplay([]);
+        this.updateChordInfo('---');
+        
+        console.log('⏹️ Notas detenidas');
+    }
+    
     updateVolume(volume) {
         this.state.volume = Math.max(0, Math.min(100, volume));
         
@@ -444,17 +980,13 @@ class GalaxyPiano {
         this.elements.volumeDisplay.textContent = this.state.volume + '%';
     }
     
-    /**
-     * Actualizar display de notas actuales
-     */
     updateNoteDisplay(notes) {
         if (notes.length === 0) {
             this.elements.currentNotesDisplay.textContent = 'Notas: Ninguna';
         } else {
             const noteNames = notes.map(note => {
-                if (window.NoteMapping) {
-                    const info = window.NoteMapping.getNoteInfo(note);
-                    return `${note} (${info?.noteName || 'N/A'})`;
+                if (typeof window.NoteMapping !== 'undefined') {
+                    return `${note} (${window.NoteMapping.getNoteName(note)})`;
                 }
                 return note.toString();
             });
@@ -462,53 +994,17 @@ class GalaxyPiano {
         }
     }
     
-    /**
-     * Detectar y mostrar información de acorde
-     */
-    detectAndDisplayChord(notes) {
-        if (notes.length < 2) {
-            this.updateChordInfo('---');
-            return;
-        }
-        
-        // Detección básica de acordes
-        if (notes.length === 3) {
-            const sortedNotes = [...notes].sort((a, b) => a - b);
-            const intervals = [
-                sortedNotes[1] - sortedNotes[0],
-                sortedNotes[2] - sortedNotes[1]
-            ];
-            
-            if (intervals[0] === 4 && intervals[1] === 3) {
-                this.updateChordInfo('Acorde Mayor');
-            } else if (intervals[0] === 3 && intervals[1] === 4) {
-                this.updateChordInfo('Acorde Menor');
-            } else {
-                this.updateChordInfo('Acorde Personalizado');
-            }
-        } else {
-            this.updateChordInfo('Multi-nota (' + notes.length + ')');
-        }
-    }
-    
-    /**
-     * Actualizar información de acorde
-     */
     updateChordInfo(chordName) {
         this.elements.chordInfoDisplay.textContent = 'Acorde: ' + chordName;
     }
     
-    /**
-     * Actualizar estado del sistema
-     */
     updateSystemStatus() {
         this.updateAudioStatus();
         this.updateGalaxyStatus();
+        this.updateComposerStatus();
+        this.updateProjectStatus();
     }
     
-    /**
-     * Actualizar estado del audio
-     */
     updateAudioStatus(customStatus = null) {
         let status, className;
         
@@ -527,21 +1023,15 @@ class GalaxyPiano {
         this.elements.audioStatusDisplay.className = className;
     }
     
-    /**
-     * Actualizar estado de la galaxia
-     */
     updateGalaxyStatus(customStatus = null) {
         let status, className;
         
         if (customStatus) {
             status = customStatus;
-            className = customStatus.includes('Error') ? 'error-state' : 'loading-state';
-        } else if (this.state.galaxyReady && this.state.starSystemReady) {
+            className = customStatus.includes('Error') ? 'error-state' : 'success-state';
+        } else if (this.state.galaxyReady) {
             status = 'Listo';
             className = 'success-state';
-        } else if (this.state.galaxyReady) {
-            status = 'Configurando estrellas...';
-            className = 'loading-state';
         } else {
             status = 'Cargando...';
             className = 'loading-state';
@@ -551,101 +1041,47 @@ class GalaxyPiano {
         this.elements.galaxyStatusDisplay.className = className;
     }
     
-    /**
-     * Ocultar indicador de carga
-     */
     hideLoading() {
         if (this.elements.loadingIndicator) {
             this.elements.loadingIndicator.classList.add('hidden');
         }
     }
     
-    /**
-     * Mostrar error al usuario
-     */
     showError(message) {
         console.error('⚠️ Error:', message);
         alert('Galaxy Piano - Error: ' + message);
     }
     
     /**
-     * Métodos de debug y testing
-     */
-    testStarColors() {
-        console.log('🧪 Testing colores de estrellas...');
-        
-        if (!this.starSystem) {
-            console.log('❌ StarSystem no disponible');
-            return;
-        }
-        
-        // Test de cada color
-        const testNotes = [1, 15, 30, 45, 60, 75, 88];
-        const colors = ['Azul', 'Azul-Blanco', 'Blanco', 'Blanco-Amarillo', 'Amarillo', 'Naranja', 'Rojo'];
-        
-        testNotes.forEach((note, index) => {
-            setTimeout(() => {
-                console.log(`🎨 Test ${colors[index]} - Nota ${note}`);
-                this.starSystem.testStar(note, 2.0);
-            }, index * 1000);
-        });
-    }
-    
-    getSystemInfo() {
-        return {
-            version: this.version,
-            isInitialized: this.isInitialized,
-            state: this.state,
-            audioStats: this.audioEngine?.getStats(),
-            galaxyInfo: this.galaxyRenderer?.getInfo(),
-            starStats: this.starSystem?.getStats()
-        };
-    }
-    
-    /**
-     * Cleanup al cerrar la aplicación
+     * Destruir aplicación completa (actualizado)
      */
     destroy() {
-        if (this.audioEngine) {
-            this.audioEngine.destroy();
+        // Destruir módulos Sprint 3
+        if (this.projectManager) {
+            this.projectManager.destroy();
         }
         
-        if (this.starSystem) {
-            this.starSystem.destroy();
+        // Destruir módulos existentes
+        if (this.audioEngine) {
+            this.audioEngine.destroy();
         }
         
         if (this.galaxyRenderer) {
             this.galaxyRenderer.destroy();
         }
         
-        console.log('🛑 Galaxy Piano destruido');
+        if (this.starSystem) {
+            this.starSystem.destroy();
+        }
+        
+        console.log('🛑 Galaxy Piano Sprint 3 destruido');
     }
 }
 
 // Inicializar aplicación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        // Esperar un poco para asegurar que todos los scripts estén cargados
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        window.galaxyPiano = new GalaxyPiano();
-        await window.galaxyPiano.init();
-        
-    } catch (error) {
-        console.error('❌ Error crítico inicializando Galaxy Piano:', error);
-        
-        // Mostrar información de debug
-        setTimeout(() => {
-            console.log('\n🔍 INFORMACIÓN DE DEBUG:');
-            console.log('========================');
-            console.log('Three.js:', typeof THREE !== 'undefined' ? '✅' : '❌');
-            console.log('AudioEngine:', typeof AudioEngine !== 'undefined' ? '✅' : '❌');
-            console.log('GalaxyRenderer:', typeof GalaxyRenderer !== 'undefined' ? '✅' : '❌');
-            console.log('StarSystem:', typeof StarSystem !== 'undefined' ? '✅' : '❌');
-            console.log('NoteMapping:', typeof window.NoteMapping !== 'undefined' ? '✅' : '❌');
-            console.log('Canvas:', document.getElementById('galaxy-canvas') ? '✅' : '❌');
-        }, 1000);
-    }
+    window.galaxyPiano = new GalaxyPiano();
+    await window.galaxyPiano.init();
 });
 
 // Cleanup al cerrar la ventana
@@ -654,24 +1090,3 @@ window.addEventListener('beforeunload', () => {
         window.galaxyPiano.destroy();
     }
 });
-
-// Funciones globales para testing
-window.testStar = (note = 40) => {
-    if (window.galaxyPiano?.starSystem) {
-        window.galaxyPiano.starSystem.testStar(note, 3.0);
-    } else {
-        console.log('⚠️ StarSystem no disponible');
-    }
-};
-
-window.testColors = () => {
-    if (window.galaxyPiano) {
-        window.galaxyPiano.testStarColors();
-    }
-};
-
-window.getGalaxyInfo = () => {
-    if (window.galaxyPiano) {
-        console.table(window.galaxyPiano.getSystemInfo());
-    }
-};
