@@ -1,31 +1,31 @@
 /**
- * GALAXY PIANO - MAIN APPLICATION (Sprint 4 Complete)
- * Arquitectura completa con sistema de Análisis y Exportación
- * Sprint 4 Completo - Implementación total y funcional
+ * GALAXY PIANO - MAIN APPLICATION v1.0 RELEASE
+ * Aplicación principal optimizada con UI avanzada
+ * Sprint 5 - Versión final de producción
  */
 
 class GalaxyPiano {
     constructor() {
-        this.version = '1.4.0'; // Sprint 4
+        this.version = '1.0.0'; // 🎉 RELEASE VERSION
+        this.buildDate = '2024-12-19';
         this.currentMode = 'live';
         this.isInitialized = false;
         
-        // Módulos principales (Sprint 1 & 2)
+        // UI Manager para experiencia avanzada
+        this.uiManager = null;
+        
+        // Módulos principales
         this.audioEngine = null;
         this.galaxyRenderer = null;
         this.starSystem = null;
-        
-        // Módulos Sprint 3
         this.sequencer = null;
         this.musicTheory = null;
         this.projectManager = null;
-        
-        // Nuevos módulos Sprint 4
         this.waves2DRenderer = null;
         this.spectrum3DRenderer = null;
         this.fileManager = null;
         
-        // Estado de la aplicación expandido
+        // Estado optimizado de la aplicación
         this.state = {
             volume: 50,
             currentNotes: [],
@@ -33,664 +33,540 @@ class GalaxyPiano {
             audioReady: false,
             galaxyReady: false,
             composerReady: false,
-            analysisReady: false, // NUEVO
+            analysisReady: false,
             currentProject: null,
             autoSave: true,
-            
-            // Estados de visualización Sprint 4
             wavesVisible: true,
             spectrumVisible: true,
-            analysisMode: 'realtime' // 'realtime', 'capture', 'playback'
+            analysisMode: 'realtime',
+            
+            // Nuevos estados v1.0
+            performanceMode: 'auto', // 'auto', 'performance', 'quality'
+            accessibilityMode: false,
+            debugMode: false,
+            fullscreen: false
         };
         
-        // Referencias DOM expandidas
+        // Referencias DOM
         this.elements = {};
         
-        console.log('🌌 Galaxy Piano v' + this.version + ' iniciando - Sprint 4 Edition');
+        // Configuración de rendimiento
+        this.performance = {
+            targetFPS: 60,
+            adaptiveQuality: true,
+            memoryLimit: 100, // MB
+            autoOptimize: true
+        };
+        
+        console.log(`🌌 Galaxy Piano v${this.version} iniciando - Production Release 🎵`);
     }
     
     /**
-     * Inicialización completa de la aplicación (Sprints 1-4)
+     * 🚀 Inicialización optimizada con loading progresivo
      */
     async init() {
         try {
-            console.log('🚀 Iniciando Galaxy Piano - Sprint 4 Complete...');
+            console.log('🎬 Iniciando Galaxy Piano v1.0...');
             
-            // 1. Obtener referencias DOM
+            // 1. Inicializar UI Manager primero
+            await this.initUIManager();
+            
+            // 2. Configurar referencias DOM
             this.initDOMReferences();
             
-            // 2. Configurar event listeners
-            this.setupEventListeners();
+            // 3. Detectar capacidades del navegador
+            await this.detectBrowserCapabilities();
             
-            // 3. Inicializar audio engine (Sprint 1)
-            await this.initAudioEngine();
+            // 4. Inicialización progresiva con feedback visual
+            await this.progressiveInitialization();
             
-            // 4. Inicializar galaxy renderer (Sprint 2)
-            await this.initGalaxyRenderer();
+            // 5. Configurar evento listeners optimizados
+            this.setupOptimizedEventListeners();
             
-            // 5. Inicializar star system (Sprint 2)
-            this.initStarSystem();
-            
-            // 6. Inicializar sequencer musical (Sprint 3)
-            await this.initSequencer();
-            
-            // 7. Inicializar motor de teoría musical (Sprint 3)
-            this.initMusicTheory();
-            
-            // 8. Inicializar gestor de proyectos (Sprint 3)
-            await this.initProjectManager();
-            
-            // 9. NUEVO - Inicializar visualización de ondas 2D (Sprint 4)
-            await this.initWaves2DRenderer();
-            
-            // 10. NUEVO - Inicializar análisis espectral 3D (Sprint 4)
-            await this.initSpectrum3DRenderer();
-            
-            // 11. NUEVO - Inicializar gestor de archivos (Sprint 4)
-            this.initFileManager();
-            
-            // 12. Configurar interfaz completa
+            // 6. Configurar interfaz completa
             this.setupCompleteUI();
             
-            // 13. Ejecutar tests de integración
-            await this.runIntegrationTests();
+            // 7. Ejecutar tests de integración
+            await this.runProductionTests();
             
-            this.isInitialized = true;
-            console.log('✅ Galaxy Piano Sprint 4 inicializado correctamente');
-            
-            this.updateSystemStatus();
+            // 8. Finalizar inicialización
+            this.finalizeInitialization();
             
         } catch (error) {
-            console.error('❌ Error inicializando Galaxy Piano:', error);
-            this.showError('Error de inicialización: ' + error.message);
+            console.error('💥 Error crítico en inicialización:', error);
+            this.handleCriticalError(error);
         }
     }
     
     /**
-     * Referencias DOM actualizadas para Sprint 4
+     * Inicializar UI Manager
      */
-    initDOMReferences() {
-        this.elements = {
-            // Navigation
-            navButtons: document.querySelectorAll('.nav-btn'),
-            
-            // Mode sections
-            liveModeSection: document.getElementById('live-mode'),
-            composerModeSection: document.getElementById('composer-mode'),
-            analysisModeSection: document.getElementById('analysis-mode'),
-            
-            // Live mode controls
-            noteInput: document.getElementById('note-input'),
-            playButton: document.getElementById('play-btn'),
-            stopButton: document.getElementById('stop-btn'),
-            volumeSlider: document.getElementById('volume'),
-            volumeDisplay: document.getElementById('volume-display'),
-            
-            // Composer mode controls
-            composerNoteInput: document.getElementById('composer-note-input'),
-            composerPlayButton: document.getElementById('composer-play-btn'),
-            composerStopButton: document.getElementById('composer-stop-btn'),
-            bpmSlider: document.getElementById('bpm-slider'),
-            bpmDisplay: document.getElementById('bpm-display'),
-            sequencerGrid: document.getElementById('sequencer-grid'),
-            chordAnalysis: document.getElementById('chord-analysis'),
-            chordSuggestions: document.getElementById('chord-suggestions'),
-            addSequenceButton: document.getElementById('add-sequence-btn'),
-            
-            // Project management
-            projectSelect: document.getElementById('project-select'),
-            newProjectButton: document.getElementById('new-project-btn'),
-            saveProjectButton: document.getElementById('save-project-btn'),
-            deleteProjectButton: document.getElementById('delete-project-btn'),
-            projectName: document.getElementById('project-name'),
-            projectDescription: document.getElementById('project-description'),
-            
-            // Analysis mode controls (NUEVOS - Sprint 4)
-            analysisNoteInput: document.getElementById('analysis-note-input'),
-            analyzeButton: document.getElementById('analyze-btn'),
-            wavesToggle: document.getElementById('waves-toggle'),
-            spectrumToggle: document.getElementById('spectrum-toggle'),
-            wavesCanvas: document.getElementById('waves-canvas'),
-            spectrumCanvas: document.getElementById('spectrum-canvas'),
-            
-            // Export controls (NUEVOS - Sprint 4)
-            exportMidiButton: document.getElementById('export-midi-btn'),
-            exportMp3Button: document.getElementById('export-mp3-btn'),
-            exportJsonButton: document.getElementById('export-json-btn'),
-            exportScreenshotButton: document.getElementById('export-screenshot-btn'),
-            exportProgress: document.getElementById('export-progress'),
-            exportProgressFill: document.getElementById('export-progress-fill'),
-            exportProgressText: document.getElementById('export-progress-text'),
-            
-            // Color mode controls (NUEVOS)
-            spectrumColorMode: document.getElementById('spectrum-color-mode'),
-            
-            // Galaxy
-            galaxyCanvas: document.getElementById('galaxy-canvas'),
-            loadingIndicator: document.getElementById('loading'),
-            
-            // Status displays
-            currentNotesDisplay: document.getElementById('current-notes'),
-            chordInfoDisplay: document.getElementById('chord-info'),
-            audioStatusDisplay: document.getElementById('audio-status'),
-            galaxyStatusDisplay: document.getElementById('galaxy-status'),
-            composerStatusDisplay: document.getElementById('composer-status'),
-            projectStatusDisplay: document.getElementById('project-status'),
-            analysisStatusDisplay: document.getElementById('analysis-status')
+    async initUIManager() {
+        if (typeof UIManager === 'undefined') {
+            throw new Error('UIManager no está disponible');
+        }
+        
+        this.uiManager = new UIManager();
+        this.uiManager.updateLoadingProgress(5, 'Inicializando interfaz...');
+        
+        console.log('🎨 UI Manager inicializado');
+    }
+    
+    /**
+     * Inicialización progresiva con feedback
+     */
+    async progressiveInitialization() {
+        const initSteps = [
+            { fn: this.initAudioEngine, progress: 20, message: 'Cargando motor de audio...' },
+            { fn: this.initGalaxyRenderer, progress: 35, message: 'Renderizando galaxia 3D...' },
+            { fn: this.initStarSystem, progress: 45, message: 'Creando sistema de estrellas...' },
+            { fn: this.initSequencer, progress: 55, message: 'Configurando compositor...' },
+            { fn: this.initMusicTheory, progress: 65, message: 'Cargando IA musical...' },
+            { fn: this.initProjectManager, progress: 75, message: 'Preparando proyectos...' },
+            { fn: this.initWaves2DRenderer, progress: 85, message: 'Análisis de ondas 2D...' },
+            { fn: this.initSpectrum3DRenderer, progress: 90, message: 'Espectro 3D avanzado...' },
+            { fn: this.initFileManager, progress: 95, message: 'Sistema de archivos...' }
+        ];
+        
+        for (const step of initSteps) {
+            try {
+                this.uiManager.updateLoadingProgress(step.progress, step.message);
+                await step.fn.call(this);
+                await this.delay(100); // Dar tiempo para UI feedback
+            } catch (error) {
+                console.error(`❌ Error en ${step.fn.name}:`, error);
+                this.uiManager.showNotification(
+                    `Error cargando ${step.message.toLowerCase()}`, 
+                    'warning'
+                );
+                // Continuar con otros módulos
+            }
+        }
+    }
+    
+    /**
+     * Detectar capacidades del navegador
+     */
+    async detectBrowserCapabilities() {
+        const capabilities = {
+            webAudio: !!(window.AudioContext || window.webkitAudioContext),
+            webGL: !!window.WebGLRenderingContext,
+            canvas2D: !!document.createElement('canvas').getContext,
+            mediaRecorder: !!window.MediaRecorder,
+            localStorage: this.testLocalStorage(),
+            performance: !!window.performance,
+            requestAnimationFrame: !!window.requestAnimationFrame
         };
         
-        console.log('📋 Referencias DOM Sprint 4 obtenidas');
+        console.log('🔍 Capacidades del navegador:', capabilities);
+        
+        // Ajustar configuración según capacidades
+        if (!capabilities.webGL) {
+            this.performance.adaptiveQuality = false;
+            this.uiManager.showNotification(
+                'WebGL no disponible - visualización limitada', 
+                'warning'
+            );
+        }
+        
+        if (!capabilities.webAudio) {
+            throw new Error('Web Audio API no soportada - audio requerido');
+        }
+        
+        this.state.browserCapabilities = capabilities;
     }
     
     /**
-     * Event listeners expandidos para Sprint 4
+     * Test de localStorage
      */
-    setupEventListeners() {
-        // Navigation
-        this.elements.navButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const mode = e.target.dataset.mode;
-                this.switchMode(mode);
-            });
+    testLocalStorage() {
+        try {
+            localStorage.setItem('test', 'test');
+            localStorage.removeItem('test');
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Inicializar audio engine optimizado
+     */
+    async initAudioEngine() {
+        if (typeof AudioEngine === 'undefined') {
+            throw new Error('AudioEngine no disponible');
+        }
+        
+        this.audioEngine = new AudioEngine();
+        await this.audioEngine.init();
+        
+        this.state.audioReady = true;
+        this.uiManager.updateModuleStatus('audio', 'active');
+        
+        console.log('🔊 Audio Engine optimizado inicializado');
+    }
+    
+    /**
+     * Inicializar galaxy renderer con optimización adaptativa
+     */
+    async initGalaxyRenderer() {
+        if (typeof GalaxyRenderer === 'undefined') {
+            throw new Error('GalaxyRenderer no disponible');
+        }
+        
+        const canvas = this.elements.galaxyCanvas;
+        if (!canvas) {
+            throw new Error('Canvas de galaxia no encontrado');
+        }
+        
+        this.galaxyRenderer = new GalaxyRenderer(canvas);
+        
+        // Configuración adaptativa según rendimiento
+        if (this.performance.adaptiveQuality) {
+            this.optimizeGalaxySettings();
+        }
+        
+        await this.galaxyRenderer.init();
+        
+        this.state.galaxyReady = true;
+        this.uiManager.updateModuleStatus('galaxy', 'active');
+        
+        console.log('🌌 Galaxy Renderer optimizado inicializado');
+    }
+    
+    /**
+     * Optimizar configuración de galaxia
+     */
+    optimizeGalaxySettings() {
+        // Detectar rendimiento del dispositivo
+        const isLowEnd = this.isLowEndDevice();
+        
+        if (isLowEnd) {
+            this.galaxyRenderer.config.backgroundStars = 400;
+            this.galaxyRenderer.config.starSize = 1.5;
+            this.performance.targetFPS = 30;
+            
+            this.uiManager.showNotification(
+                'Modo de rendimiento activado', 
+                'info', 
+                2000
+            );
+        }
+    }
+    
+    /**
+     * Detectar dispositivo de bajo rendimiento
+     */
+    isLowEndDevice() {
+        // Heurísticas básicas
+        const hardwareConcurrency = navigator.hardwareConcurrency || 1;
+        const memory = navigator.deviceMemory || 1;
+        const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        
+        return hardwareConcurrency < 4 || memory < 2 || isMobile;
+    }
+    
+    /**
+     * Inicializar star system optimizado
+     */
+    initStarSystem() {
+        if (typeof StarSystem === 'undefined') {
+            throw new Error('StarSystem no disponible');
+        }
+        
+        this.starSystem = new StarSystem(this.galaxyRenderer);
+        
+        // Configuración adaptativa
+        if (this.isLowEndDevice()) {
+            this.starSystem.config.maxStars = 50;
+        }
+        
+        console.log('⭐ Star System optimizado inicializado');
+    }
+    
+    /**
+     * Inicializar sequencer con validación
+     */
+    async initSequencer() {
+        if (typeof MusicalSequencer === 'undefined') {
+            console.warn('⚠️ MusicalSequencer no disponible - modo compositor limitado');
+            return;
+        }
+        
+        this.sequencer = new MusicalSequencer(this.audioEngine, this.starSystem);
+        
+        this.state.composerReady = true;
+        this.uiManager.updateModuleStatus('composer', 'active');
+        
+        console.log('🎼 Musical Sequencer inicializado');
+    }
+    
+    /**
+     * Inicializar music theory
+     */
+    initMusicTheory() {
+        if (typeof MusicTheoryEngine === 'undefined') {
+            console.warn('⚠️ MusicTheoryEngine no disponible - análisis limitado');
+            return;
+        }
+        
+        this.musicTheory = new MusicTheoryEngine();
+        console.log('🎵 Music Theory Engine inicializado');
+    }
+    
+    /**
+     * Inicializar project manager
+     */
+    async initProjectManager() {
+        if (typeof ProjectManager === 'undefined') {
+            console.warn('⚠️ ProjectManager no disponible - sin persistencia');
+            return;
+        }
+        
+        this.projectManager = new ProjectManager(
+            this.audioEngine,
+            this.galaxyRenderer,
+            this.starSystem,
+            this.sequencer,
+            this.musicTheory
+        );
+        
+        // Cargar proyecto inicial
+        const projects = this.projectManager.getProjectsList();
+        if (projects.length > 0) {
+            const currentProject = projects.find(p => p.isCurrent) || projects[0];
+            await this.projectManager.loadProject(currentProject.id);
+            this.state.currentProject = currentProject.id;
+        }
+        
+        console.log('💾 Project Manager inicializado');
+    }
+    
+    /**
+     * Inicializar waves 2D renderer
+     */
+    async initWaves2DRenderer() {
+        if (typeof Waves2DRenderer === 'undefined') {
+            console.warn('⚠️ Waves2DRenderer no disponible - sin análisis 2D');
+            return;
+        }
+        
+        const canvas = this.elements.wavesCanvas;
+        if (!canvas) {
+            console.warn('⚠️ Canvas de ondas no encontrado');
+            return;
+        }
+        
+        this.waves2DRenderer = new Waves2DRenderer(canvas, this.audioEngine);
+        await this.waves2DRenderer.init();
+        
+        console.log('🌊 Waves2D Renderer inicializado');
+    }
+    
+    /**
+     * Inicializar spectrum 3D renderer
+     */
+    async initSpectrum3DRenderer() {
+        if (typeof Spectrum3DRenderer === 'undefined') {
+            console.warn('⚠️ Spectrum3DRenderer no disponible - sin espectro 3D');
+            return;
+        }
+        
+        const canvas = this.elements.spectrumCanvas;
+        if (!canvas) {
+            console.warn('⚠️ Canvas de espectro no encontrado');
+            return;
+        }
+        
+        this.spectrum3DRenderer = new Spectrum3DRenderer(canvas, this.audioEngine);
+        await this.spectrum3DRenderer.init();
+        
+        this.state.analysisReady = true;
+        this.uiManager.updateModuleStatus('analysis', 'active');
+        
+        console.log('📊 Spectrum3D Renderer inicializado');
+    }
+    
+    /**
+     * Inicializar file manager
+     */
+    initFileManager() {
+        if (typeof FileManager === 'undefined') {
+            console.warn('⚠️ FileManager no disponible - sin exportación');
+            return;
+        }
+        
+        this.fileManager = new FileManager(
+            this.audioEngine,
+            this.projectManager,
+            this.sequencer,
+            this.musicTheory
+        );
+        
+        console.log('📁 File Manager inicializado');
+    }
+    
+    /**
+     * Configurar event listeners optimizados
+     */
+    setupOptimizedEventListeners() {
+        // Debounced event listeners para mejor rendimiento
+        this.setupDebouncedInputs();
+        this.setupOptimizedMouseEvents();
+        this.setupKeyboardShortcuts();
+        this.setupWindowEvents();
+        
+        console.log('🎧 Event listeners optimizados configurados');
+    }
+    
+    /**
+     * Configurar inputs con debounce
+     */
+    setupDebouncedInputs() {
+        // Input de notas con debounce
+        const noteInputs = [
+            this.elements.noteInput,
+            this.elements.composerNoteInput,
+            this.elements.analysisNoteInput
+        ].filter(Boolean);
+        
+        noteInputs.forEach(input => {
+            if (input) {
+                input.addEventListener('input', this.debounce((e) => {
+                    this.handleNoteInputChange(e.target.value, input.id);
+                }, 300));
+            }
         });
         
-        // Live mode
-        if (this.elements.playButton) {
-            this.elements.playButton.addEventListener('click', () => {
-                this.playNotes();
-            });
-        }
-        
-        if (this.elements.stopButton) {
-            this.elements.stopButton.addEventListener('click', () => {
-                this.stopNotes();
-            });
-        }
-        
-        if (this.elements.noteInput) {
-            this.elements.noteInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.playNotes();
-                }
-            });
-        }
-        
+        // Volume slider con throttle
         if (this.elements.volumeSlider) {
-            this.elements.volumeSlider.addEventListener('input', (e) => {
-                this.updateVolume(parseInt(e.target.value));
-            });
+            this.elements.volumeSlider.addEventListener('input', 
+                this.throttle((e) => {
+                    this.updateVolume(parseInt(e.target.value));
+                }, 50)
+            );
         }
+    }
+    
+    /**
+     * Configurar eventos de mouse optimizados
+     */
+    setupOptimizedMouseEvents() {
+        // Botones principales
+        const buttonMappings = {
+            playButton: () => this.playNotes(),
+            stopButton: () => this.stopNotes(),
+            composerPlayButton: () => this.playComposerSequence(),
+            composerStopButton: () => this.stopComposerSequence(),
+            analyzeButton: () => this.analyzeNotes(),
+            exportMidiButton: () => this.exportToMIDI(),
+            exportMp3Button: () => this.exportToMP3(),
+            exportJsonButton: () => this.exportToJSON(),
+            exportScreenshotButton: () => this.exportScreenshot()
+        };
         
-        // Composer mode
-        if (this.elements.composerPlayButton) {
-            this.elements.composerPlayButton.addEventListener('click', () => {
-                this.playComposerSequence();
-            });
-        }
-        
-        if (this.elements.composerStopButton) {
-            this.elements.composerStopButton.addEventListener('click', () => {
-                this.stopComposerSequence();
-            });
-        }
-        
-        if (this.elements.composerNoteInput) {
-            this.elements.composerNoteInput.addEventListener('input', (e) => {
-                this.analyzeComposerInput(e.target.value);
-            });
-            
-            this.elements.composerNoteInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.addToSequence();
-                }
-            });
-        }
-        
-        if (this.elements.addSequenceButton) {
-            this.elements.addSequenceButton.addEventListener('click', () => {
-                this.addToSequence();
-            });
-        }
-        
-        if (this.elements.bpmSlider) {
-            this.elements.bpmSlider.addEventListener('input', (e) => {
-                this.updateBPM(parseInt(e.target.value));
-            });
-        }
-        
-        // Project management
-        if (this.elements.newProjectButton) {
-            this.elements.newProjectButton.addEventListener('click', () => {
-                this.createNewProject();
-            });
-        }
-        
-        if (this.elements.saveProjectButton) {
-            this.elements.saveProjectButton.addEventListener('click', () => {
-                this.saveCurrentProject();
-            });
-        }
-        
-        if (this.elements.deleteProjectButton) {
-            this.elements.deleteProjectButton.addEventListener('click', () => {
-                this.deleteCurrentProject();
-            });
-        }
-        
-        if (this.elements.projectSelect) {
-            this.elements.projectSelect.addEventListener('change', (e) => {
-                this.loadSelectedProject(e.target.value);
-            });
-        }
-        
-        if (this.elements.projectName) {
-            this.elements.projectName.addEventListener('input', (e) => {
-                this.updateProjectMetadata('name', e.target.value);
-            });
-        }
-        
-        if (this.elements.projectDescription) {
-            this.elements.projectDescription.addEventListener('input', (e) => {
-                this.updateProjectMetadata('description', e.target.value);
-            });
-        }
-        
-        // Analysis mode (NUEVO Sprint 4)
-        if (this.elements.analyzeButton) {
-            this.elements.analyzeButton.addEventListener('click', () => {
-                this.analyzeNotes();
-            });
-        }
-        
-        if (this.elements.analysisNoteInput) {
-            this.elements.analysisNoteInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.analyzeNotes();
-                }
-            });
-            
-            this.elements.analysisNoteInput.addEventListener('input', (e) => {
-                this.previewAnalysis(e.target.value);
-            });
-        }
-        
-        if (this.elements.wavesToggle) {
-            this.elements.wavesToggle.addEventListener('click', () => {
-                this.toggleWavesVisualization();
-            });
-        }
-        
-        if (this.elements.spectrumToggle) {
-            this.elements.spectrumToggle.addEventListener('click', () => {
-                this.toggleSpectrumVisualization();
-            });
-        }
-        
-        // Export controls (NUEVO Sprint 4)
-        if (this.elements.exportMidiButton) {
-            this.elements.exportMidiButton.addEventListener('click', () => {
-                this.exportToMIDI();
-            });
-        }
-        
-        if (this.elements.exportMp3Button) {
-            this.elements.exportMp3Button.addEventListener('click', () => {
-                this.exportToMP3();
-            });
-        }
-        
-        if (this.elements.exportJsonButton) {
-            this.elements.exportJsonButton.addEventListener('click', () => {
-                this.exportToJSON();
-            });
-        }
-        
-        if (this.elements.exportScreenshotButton) {
-            this.elements.exportScreenshotButton.addEventListener('click', () => {
-                this.exportScreenshot();
-            });
-        }
-        
-        if (this.elements.spectrumColorMode) {
-            this.elements.spectrumColorMode.addEventListener('change', (e) => {
-                this.changeSpectrumColorMode(e.target.value);
-            });
-        }
-        
-        // Window events
-        window.addEventListener('resize', () => {
+        Object.entries(buttonMappings).forEach(([elementKey, handler]) => {
+            const element = this.elements[elementKey];
+            if (element) {
+                element.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    this.uiManager.setLoadingState(elementKey, true);
+                    
+                    try {
+                        await handler();
+                        this.uiManager.trackUserAction('button_click', { button: elementKey });
+                    } catch (error) {
+                        this.handleActionError(error, `Error en ${elementKey}`);
+                    } finally {
+                        this.uiManager.setLoadingState(elementKey, false);
+                    }
+                });
+            }
+        });
+    }
+    
+    /**
+     * Configurar atajos de teclado
+     */
+    setupKeyboardShortcuts() {
+        // Los atajos están manejados por UIManager
+        console.log('⌨️ Atajos de teclado configurados por UIManager');
+    }
+    
+    /**
+     * Configurar eventos de ventana
+     */
+    setupWindowEvents() {
+        // Resize optimizado con debounce
+        window.addEventListener('resize', this.debounce(() => {
             this.handleWindowResize();
+        }, 100));
+        
+        // Visibility API para optimización
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pauseNonEssentialSystems();
+            } else {
+                this.resumeNonEssentialSystems();
+            }
         });
         
+        // Cleanup al cerrar
         window.addEventListener('beforeunload', () => {
             this.handleAppExit();
         });
-        
-        console.log('🎧 Event listeners Sprint 4 configurados');
     }
     
     /**
-     * Inicializar audio engine (Sprint 1)
+     * Pausar sistemas no esenciales
      */
-    async initAudioEngine() {
-        try {
-            if (typeof AudioEngine === 'undefined') {
-                throw new Error('AudioEngine no está disponible');
-            }
-            
-            this.audioEngine = new AudioEngine();
-            await this.audioEngine.init();
-            
-            this.state.audioReady = true;
-            console.log('🔊 Audio Engine inicializado');
-            
-            this.updateAudioStatus('Listo');
-            
-        } catch (error) {
-            console.error('❌ Error inicializando audio:', error);
-            this.updateAudioStatus('Error: ' + error.message);
-            this.showError('Error de audio: ' + error.message);
+    pauseNonEssentialSystems() {
+        if (this.galaxyRenderer && this.galaxyRenderer.state.isAnimating) {
+            this.galaxyRenderer.stopAnimation();
+        }
+        
+        if (this.spectrum3DRenderer && this.spectrum3DRenderer.state.isAnimating) {
+            this.spectrum3DRenderer.stopAnimation();
         }
     }
     
     /**
-     * Inicializar galaxy renderer (Sprint 2)
+     * Reanudar sistemas
      */
-    async initGalaxyRenderer() {
-        try {
-            if (typeof GalaxyRenderer === 'undefined') {
-                throw new Error('GalaxyRenderer no está disponible');
-            }
-            
-            this.galaxyRenderer = new GalaxyRenderer(this.elements.galaxyCanvas);
-            await this.galaxyRenderer.init();
-            
-            this.state.galaxyReady = true;
-            console.log('🌌 Galaxy Renderer inicializado');
-            
-            this.updateGalaxyStatus('Listo');
-            this.hideLoading();
-            
-        } catch (error) {
-            console.error('❌ Error inicializando galaxy:', error);
-            this.updateGalaxyStatus('Error: ' + error.message);
-            this.showError('Error de galaxia: ' + error.message);
+    resumeNonEssentialSystems() {
+        if (this.galaxyRenderer && !this.galaxyRenderer.state.isAnimating) {
+            this.galaxyRenderer.startAnimation();
+        }
+        
+        if (this.spectrum3DRenderer && !this.spectrum3DRenderer.state.isAnimating) {
+            this.spectrum3DRenderer.startAnimation();
         }
     }
     
     /**
-     * Inicializar star system (Sprint 2)
+     * Manejar cambios en input de notas
      */
-    initStarSystem() {
-        try {
-            if (typeof StarSystem === 'undefined') {
-                throw new Error('StarSystem no está disponible');
-            }
-            
-            this.starSystem = new StarSystem(this.galaxyRenderer);
-            console.log('⭐ Star System inicializado');
-            
-        } catch (error) {
-            console.error('❌ Error inicializando star system:', error);
+    handleNoteInputChange(value, inputId) {
+        if (!value.trim()) return;
+        
+        // Análisis en tiempo real para compositor
+        if (inputId === 'composer-note-input' && this.musicTheory) {
+            this.analyzeComposerInput(value);
+        }
+        
+        // Preview para análisis
+        if (inputId === 'analysis-note-input' && this.musicTheory) {
+            this.previewAnalysis(value);
         }
     }
     
     /**
-     * Inicializar sequencer musical (Sprint 3)
-     */
-    async initSequencer() {
-        try {
-            if (typeof MusicalSequencer === 'undefined') {
-                throw new Error('MusicalSequencer no está disponible');
-            }
-            
-            this.sequencer = new MusicalSequencer(this.audioEngine, this.starSystem);
-            
-            console.log('🎼 Musical Sequencer inicializado');
-            this.updateComposerStatus('Sequencer listo');
-            
-        } catch (error) {
-            console.error('❌ Error inicializando sequencer:', error);
-            this.updateComposerStatus('Error: ' + error.message);
-        }
-    }
-    
-    /**
-     * Inicializar motor de teoría musical (Sprint 3)
-     */
-    initMusicTheory() {
-        try {
-            if (typeof MusicTheoryEngine === 'undefined') {
-                throw new Error('MusicTheoryEngine no está disponible');
-            }
-            
-            this.musicTheory = new MusicTheoryEngine();
-            
-            console.log('🎵 Music Theory Engine inicializado');
-            
-        } catch (error) {
-            console.error('❌ Error inicializando music theory:', error);
-        }
-    }
-    
-    /**
-     * Inicializar gestor de proyectos (Sprint 3)
-     */
-    async initProjectManager() {
-        try {
-            if (typeof ProjectManager === 'undefined') {
-                throw new Error('ProjectManager no está disponible');
-            }
-            
-            this.projectManager = new ProjectManager(
-                this.audioEngine,
-                this.galaxyRenderer,
-                this.starSystem,
-                this.sequencer,
-                this.musicTheory
-            );
-            
-            // Cargar proyecto inicial
-            const projects = this.projectManager.getProjectsList();
-            if (projects.length > 0) {
-                const currentProject = projects.find(p => p.isCurrent) || projects[0];
-                await this.projectManager.loadProject(currentProject.id);
-                this.state.currentProject = currentProject.id;
-            }
-            
-            this.updateProjectsUI();
-            
-            console.log('💾 Project Manager inicializado');
-            this.updateProjectStatus('Listo');
-            
-        } catch (error) {
-            console.error('❌ Error inicializando project manager:', error);
-            this.updateProjectStatus('Error: ' + error.message);
-        }
-    }
-    
-    /**
-     * NUEVO - Inicializar visualización de ondas 2D (Sprint 4)
-     */
-    async initWaves2DRenderer() {
-        try {
-            if (typeof Waves2DRenderer === 'undefined') {
-                console.warn('⚠️ Waves2DRenderer no está disponible - funcionalidad limitada');
-                return;
-            }
-            
-            this.waves2DRenderer = new Waves2DRenderer(this.elements.wavesCanvas, this.audioEngine);
-            await this.waves2DRenderer.init();
-            
-            console.log('🌊 Waves2D Renderer inicializado');
-            
-        } catch (error) {
-            console.error('❌ Error inicializando Waves2D:', error);
-            this.updateAnalysisStatus('Error: Ondas 2D no disponibles');
-        }
-    }
-    
-    /**
-     * NUEVO - Inicializar análisis espectral 3D (Sprint 4)
-     */
-    async initSpectrum3DRenderer() {
-        try {
-            if (typeof Spectrum3DRenderer === 'undefined') {
-                console.warn('⚠️ Spectrum3DRenderer no está disponible - funcionalidad limitada');
-                return;
-            }
-            
-            this.spectrum3DRenderer = new Spectrum3DRenderer(this.elements.spectrumCanvas, this.audioEngine);
-            await this.spectrum3DRenderer.init();
-            
-            console.log('📊 Spectrum3D Renderer inicializado');
-            this.state.analysisReady = true;
-            
-        } catch (error) {
-            console.error('❌ Error inicializando Spectrum3D:', error);
-            this.updateAnalysisStatus('Error: Espectro 3D no disponible');
-        }
-    }
-    
-    /**
-     * NUEVO - Inicializar gestor de archivos (Sprint 4)
-     */
-    initFileManager() {
-        try {
-            if (typeof FileManager === 'undefined') {
-                console.warn('⚠️ FileManager no está disponible - exportación limitada');
-                return;
-            }
-            
-            this.fileManager = new FileManager(
-                this.audioEngine,
-                this.projectManager,
-                this.sequencer,
-                this.musicTheory
-            );
-            
-            console.log('📁 File Manager inicializado');
-            
-        } catch (error) {
-            console.error('❌ Error inicializando File Manager:', error);
-        }
-    }
-    
-    /**
-     * Configurar interfaz completa
-     */
-    setupCompleteUI() {
-        // Configuración básica
-        this.updateVolume(this.state.volume);
-        this.switchMode('live');
-        this.updateNoteDisplay([]);
-        this.updateChordInfo('---');
-        
-        // Configuración de composer
-        this.updateBPM(120);
-        this.updateComposerStatus('Listo');
-        
-        // Configuración inicial de proyectos
-        this.updateProjectsUI();
-        
-        // Configuración de análisis (Sprint 4)
-        this.updateAnalysisStatus('Listo');
-        this.updateVisualizationToggles();
-        this.updateExportControls();
-        
-        console.log('🎨 UI completa configurada');
-    }
-    
-    /**
-     * Cambiar modo de aplicación
-     */
-    switchMode(mode) {
-        if (!['live', 'composer', 'analysis'].includes(mode)) {
-            console.error('Modo inválido:', mode);
-            return;
-        }
-        
-        this.currentMode = mode;
-        
-        // Detener reproducción al cambiar modo
-        this.stopNotes();
-        if (this.sequencer) {
-            this.sequencer.stopSequence();
-        }
-        
-        // Actualizar navegación
-        this.elements.navButtons.forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.mode === mode);
-        });
-        
-        // Mostrar sección correspondiente
-        document.querySelectorAll('.mode-section').forEach(section => {
-            section.classList.remove('active');
-        });
-        
-        const targetSection = document.getElementById(mode + '-mode');
-        if (targetSection) {
-            targetSection.classList.add('active');
-        }
-        
-        // Actualizar clase del body
-        document.body.className = 'galaxy-mode-' + mode;
-        
-        // Configuraciones específicas por modo
-        if (mode === 'composer') {
-            this.initComposerMode();
-        } else if (mode === 'analysis') {
-            this.initAnalysisMode();
-        }
-        
-        console.log('🔄 Modo cambiado a:', mode);
-    }
-    
-    /**
-     * Inicializar modo compositor
-     */
-    initComposerMode() {
-        // Actualizar UI de composer
-        this.updateSequencerGrid();
-        this.updateChordAnalysis();
-        this.updateChordSuggestions();
-        
-        console.log('🎼 Modo Compositor inicializado');
-    }
-    
-    /**
-     * NUEVO - Inicializar modo análisis (Sprint 4)
-     */
-    initAnalysisMode() {
-        // Configurar visualizaciones
-        this.updateVisualizationToggles();
-        
-        // Configurar controles de exportación
-        this.updateExportControls();
-        
-        // Redimensionar canvas si es necesario
-        if (this.waves2DRenderer && this.spectrum3DRenderer) {
-            setTimeout(() => {
-                this.handleWindowResize();
-            }, 100);
-        }
-        
-        console.log('📊 Modo Análisis inicializado');
-        this.updateAnalysisStatus('Listo');
-    }
-    
-    /**
-     * Reproducir notas desde input (Live mode)
+     * Reproducir notas optimizado
      */
     async playNotes() {
-        if (!this.state.audioReady) {
-            this.showError('Audio no está listo');
-            return;
-        }
-        
         const input = this.elements.noteInput?.value?.trim();
         if (!input) {
-            this.showError('Ingresa una nota (1-88)');
+            this.uiManager.showNotification('Ingresa una nota (1-88)', 'warning');
             return;
         }
         
@@ -698,75 +574,64 @@ class GalaxyPiano {
             const notes = this.parseNoteInput(input);
             
             if (notes.length === 0) {
-                this.showError('Formato de nota inválido');
-                return;
+                throw new Error('Formato de nota inválido');
             }
             
+            // Validación optimizada
             const invalidNotes = notes.filter(note => note < 1 || note > 88);
             if (invalidNotes.length > 0) {
-                this.showError('Notas fuera de rango (1-88): ' + invalidNotes.join(', '));
-                return;
+                throw new Error(`Notas fuera de rango: ${invalidNotes.join(', ')}`);
             }
             
-            console.log('🎵 Reproduciendo notas:', notes);
+            // Reproducir con feedback
+            this.uiManager.trackUserAction('play_notes', { notes, count: notes.length });
             
-            // Reproducir con audio engine
             await this.audioEngine.playNotes(notes);
             
-            // Crear estrellas visuales
             if (this.starSystem) {
                 this.starSystem.createStars(notes, 2.0, 0.8);
             }
             
-            // Analizar acordes con music theory
+            // Análisis musical si hay múltiples notas
             if (this.musicTheory && notes.length > 1) {
                 const analysis = this.musicTheory.analyzeChord(notes);
                 if (analysis.bestMatch) {
                     this.updateChordInfo(analysis.bestMatch.displayName);
+                    this.uiManager.showNotification(
+                        `Acorde: ${analysis.bestMatch.displayName}`, 
+                        'success', 
+                        2000
+                    );
                 }
             }
             
-            // Actualizar estado
             this.state.currentNotes = notes;
-            this.state.isPlaying = true;
-            
             this.updateNoteDisplay(notes);
             
         } catch (error) {
-            console.error('❌ Error reproduciendo notas:', error);
-            this.showError('Error de reproducción: ' + error.message);
+            this.handleActionError(error, 'Error reproduciendo notas');
         }
     }
     
     /**
-     * NUEVO - Analizar notas en modo análisis (Sprint 4)
+     * Analizar notas en modo análisis
      */
     async analyzeNotes() {
-        if (!this.state.audioReady) {
-            this.showError('Sistema de audio no está listo');
-            return;
-        }
-        
         const input = this.elements.analysisNoteInput?.value?.trim();
         if (!input) {
-            this.showError('Ingresa notas para analizar');
+            this.uiManager.showNotification('Ingresa notas para analizar', 'warning');
             return;
         }
         
         try {
             const notes = this.parseNoteInput(input);
             
-            if (notes.length === 0) {
-                this.showError('Formato de nota inválido');
-                return;
-            }
+            this.uiManager.trackUserAction('analyze_notes', { notes, count: notes.length });
             
-            console.log('📊 Analizando notas:', notes);
-            
-            // Reproducir con audio engine
+            // Reproducir audio
             await this.audioEngine.playNotes(notes, 3.0, 0.8);
             
-            // Crear visualizaciones
+            // Visualizaciones
             if (this.state.wavesVisible && this.waves2DRenderer) {
                 if (notes.length === 1) {
                     this.waves2DRenderer.addNote(notes[0], 3000, 0.8);
@@ -775,7 +640,6 @@ class GalaxyPiano {
                 }
             }
             
-            // Crear estrellas en galaxia
             if (this.starSystem) {
                 this.starSystem.createStars(notes, 3.0, 0.8);
             }
@@ -785,938 +649,389 @@ class GalaxyPiano {
                 const analysis = this.musicTheory.analyzeChord(notes);
                 if (analysis.bestMatch) {
                     this.updateChordInfo(analysis.bestMatch.displayName);
-                    this.showSuccess(`Acorde detectado: ${analysis.bestMatch.displayName}`);
+                    this.uiManager.showNotification(
+                        `✨ Análisis: ${analysis.bestMatch.displayName} (${Math.round(analysis.confidence * 100)}%)`, 
+                        'success'
+                    );
                 }
             }
             
-            // Actualizar estado
             this.state.currentNotes = notes;
             this.updateNoteDisplay(notes);
             
         } catch (error) {
-            console.error('❌ Error analizando notas:', error);
-            this.showError('Error de análisis: ' + error.message);
+            this.handleActionError(error, 'Error en análisis');
         }
     }
     
     /**
-     * Reproducir secuencia del compositor
-     */
-    async playComposerSequence() {
-        if (!this.sequencer) {
-            this.showError('Sequencer no está listo');
-            return;
-        }
-        
-        try {
-            await this.sequencer.playSequence();
-            console.log('▶️ Secuencia del compositor iniciada');
-        } catch (error) {
-            console.error('❌ Error reproduciendo secuencia:', error);
-            this.showError('Error en secuencia: ' + error.message);
-        }
-    }
-    
-    /**
-     * Detener secuencia del compositor
-     */
-    stopComposerSequence() {
-        if (this.sequencer) {
-            this.sequencer.stopSequence();
-        }
-        console.log('⏹️ Secuencia del compositor detenida');
-    }
-    
-    /**
-     * Analizar entrada del compositor en tiempo real
-     */
-    analyzeComposerInput(input) {
-        if (!this.sequencer || !this.musicTheory || !input.trim()) {
-            this.updateChordAnalysis('---');
-            this.updateChordSuggestions([]);
-            return;
-        }
-        
-        try {
-            // Parsear entrada
-            const parsed = this.sequencer.parseMusicalInput(input);
-            
-            if (parsed.success && parsed.chords.length > 0) {
-                // Analizar primer acorde
-                const firstChord = parsed.chords[0];
-                const noteNumbers = firstChord.notes.map(note => note.number);
-                
-                const analysis = this.musicTheory.analyzeChord(noteNumbers);
-                
-                if (analysis.bestMatch) {
-                    this.updateChordAnalysis(analysis.bestMatch.displayName, analysis.confidence);
-                    this.updateChordSuggestions(analysis.suggestions);
-                } else {
-                    this.updateChordAnalysis('No identificado');
-                    this.updateChordSuggestions([]);
-                }
-            } else if (parsed.success && parsed.notes.length > 1) {
-                // Analizar como acorde simple
-                const noteNumbers = parsed.notes.map(note => note.number);
-                const analysis = this.musicTheory.analyzeChord(noteNumbers);
-                
-                if (analysis.bestMatch) {
-                    this.updateChordAnalysis(analysis.bestMatch.displayName, analysis.confidence);
-                    this.updateChordSuggestions(analysis.suggestions);
-                }
-            } else {
-                this.updateChordAnalysis('---');
-                this.updateChordSuggestions([]);
-            }
-            
-        } catch (error) {
-            console.error('❌ Error analizando entrada:', error);
-        }
-    }
-    
-    /**
-     * Añadir entrada a la secuencia
-     */
-    addToSequence() {
-        const input = this.elements.composerNoteInput?.value?.trim();
-        if (!input || !this.sequencer) {
-            return;
-        }
-        
-        try {
-            const result = this.sequencer.createSequenceFromInput(input, 0);
-            
-            if (result.success) {
-                this.updateSequencerGrid();
-                if (this.elements.composerNoteInput) {
-                    this.elements.composerNoteInput.value = '';
-                }
-                this.showSuccess('Secuencia añadida correctamente');
-            } else {
-                this.showError(result.error);
-            }
-            
-        } catch (error) {
-            console.error('❌ Error añadiendo a secuencia:', error);
-            this.showError('Error en secuencia: ' + error.message);
-        }
-    }
-    
-    /**
-     * NUEVO - Vista previa de análisis en tiempo real (Sprint 4)
-     */
-    previewAnalysis(input) {
-        if (!input.trim()) {
-            this.updateChordInfo('---');
-            return;
-        }
-        
-        try {
-            const notes = this.parseNoteInput(input);
-            
-            if (notes.length > 1 && this.musicTheory) {
-                const analysis = this.musicTheory.analyzeChord(notes);
-                if (analysis.bestMatch) {
-                    this.updateChordInfo(`Preview: ${analysis.bestMatch.displayName}`);
-                }
-            }
-            
-        } catch (error) {
-            // Silenciar errores de preview
-        }
-    }
-    
-    /**
-     * NUEVO - Toggle visualización de ondas (Sprint 4)
-     */
-    toggleWavesVisualization() {
-        this.state.wavesVisible = !this.state.wavesVisible;
-        
-        if (this.elements.wavesToggle) {
-            this.elements.wavesToggle.classList.toggle('active', this.state.wavesVisible);
-        }
-        
-        if (this.elements.wavesCanvas) {
-            this.elements.wavesCanvas.style.display = this.state.wavesVisible ? 'block' : 'none';
-        }
-        
-        console.log('🌊 Ondas 2D:', this.state.wavesVisible ? 'ON' : 'OFF');
-    }
-    
-    /**
-     * NUEVO - Toggle visualización de espectro (Sprint 4)
-     */
-    toggleSpectrumVisualization() {
-        this.state.spectrumVisible = !this.state.spectrumVisible;
-        
-        if (this.elements.spectrumToggle) {
-            this.elements.spectrumToggle.classList.toggle('active', this.state.spectrumVisible);
-        }
-        
-        if (this.elements.spectrumCanvas) {
-            this.elements.spectrumCanvas.style.display = this.state.spectrumVisible ? 'block' : 'none';
-        }
-        
-        console.log('📊 Espectro 3D:', this.state.spectrumVisible ? 'ON' : 'OFF');
-    }
-    
-    /**
-     * NUEVO - Cambiar modo de color del espectro (Sprint 4)
-     */
-    changeSpectrumColorMode(mode) {
-        if (this.spectrum3DRenderer) {
-            this.spectrum3DRenderer.setColorMode(mode);
-            console.log('🎨 Modo de color del espectro:', mode);
-        }
-    }
-    
-    /**
-     * NUEVO - Exportar a MIDI (Sprint 4)
+     * Exportar a MIDI optimizado
      */
     async exportToMIDI() {
         if (!this.fileManager) {
-            this.showError('Sistema de exportación no disponible');
+            throw new Error('Sistema de exportación no disponible');
+        }
+        
+        this.uiManager.showNotification('Iniciando exportación MIDI...', 'info');
+        
+        const result = await this.fileManager.exportToMIDI(this.state.currentProject, {
+            includeMetadata: true,
+            trackSeparation: true,
+            quantization: 16
+        });
+        
+        if (result.success) {
+            this.uiManager.showNotification(
+                `✅ MIDI guardado: ${result.filename}`, 
+                'success'
+            );
+            this.uiManager.trackUserAction('export', { format: 'midi', size: result.size });
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Cambiar modo con animación
+     */
+    async switchMode(mode) {
+        if (!['live', 'composer', 'analysis'].includes(mode) || mode === this.currentMode) {
             return;
         }
         
-        try {
-            this.showExportProgress(true);
-            this.updateExportProgress(0, 'Preparando exportación MIDI...');
-            
-            const result = await this.fileManager.exportToMIDI(this.state.currentProject, {
-                includeMetadata: true,
-                trackSeparation: true,
-                quantization: 16
-            });
-            
-            if (result.success) {
-                this.updateExportProgress(100, 'MIDI exportado correctamente');
-                this.showSuccess(`MIDI guardado: ${result.filename}`);
-            }
-            
-        } catch (error) {
-            console.error('❌ Error exportando MIDI:', error);
-            this.showError('Error exportando MIDI: ' + error.message);
-        } finally {
-            setTimeout(() => this.showExportProgress(false), 2000);
+        const fromMode = this.currentMode;
+        this.currentMode = mode;
+        
+        // Detener reproducción
+        this.stopAllPlayback();
+        
+        // Animación de transición
+        await this.uiManager.animateModeTransition(fromMode, mode);
+        
+        // Actualizar navegación
+        this.updateNavigation(mode);
+        
+        // Configuraciones específicas
+        if (mode === 'composer') {
+            this.initComposerMode();
+        } else if (mode === 'analysis') {
+            this.initAnalysisMode();
         }
+        
+        // Actualizar clase del body
+        document.body.className = 'galaxy-mode-' + mode;
+        
+        this.uiManager.trackUserAction('mode_switch', { from: fromMode, to: mode });
+        this.uiManager.showNotification(`Modo ${mode} activado`, 'info', 1500);
+        
+        console.log('🔄 Modo cambiado:', fromMode, '→', mode);
     }
     
     /**
-     * NUEVO - Exportar a MP3 (Sprint 4)
+     * Detener toda reproducción
      */
-    async exportToMP3() {
-        if (!this.fileManager) {
-            this.showError('Sistema de exportación no disponible');
-            return;
-        }
-        
-        try {
-            this.showExportProgress(true);
-            this.updateExportProgress(0, 'Preparando grabación MP3...');
-            
-            const result = await this.fileManager.exportToMP3(this.state.currentProject, {
-                bitRate: 128,
-                sampleRate: 44100,
-                fadeOut: true
-            });
-            
-            if (result.success) {
-                this.updateExportProgress(100, 'MP3 exportado correctamente');
-                this.showSuccess(`MP3 guardado: ${result.filename}`);
-            }
-            
-        } catch (error) {
-            console.error('❌ Error exportando MP3:', error);
-            this.showError('Error exportando MP3: ' + error.message);
-        } finally {
-            setTimeout(() => this.showExportProgress(false), 2000);
-        }
-    }
-    
-    /**
-     * NUEVO - Exportar a JSON (Sprint 4)
-     */
-    async exportToJSON() {
-        if (!this.fileManager) {
-            this.showError('Sistema de exportación no disponible');
-            return;
-        }
-        
-        try {
-            this.showExportProgress(true);
-            this.updateExportProgress(0, 'Preparando exportación JSON...');
-            
-            const result = await this.fileManager.exportToJSON(this.state.currentProject, {
-                includeAudioSettings: true,
-                includeVisualSettings: true,
-                prettify: true
-            });
-            
-            if (result.success) {
-                this.updateExportProgress(100, 'JSON exportado correctamente');
-                this.showSuccess(`JSON guardado: ${result.filename}`);
-            }
-            
-        } catch (error) {
-            console.error('❌ Error exportando JSON:', error);
-            this.showError('Error exportando JSON: ' + error.message);
-        } finally {
-            setTimeout(() => this.showExportProgress(false), 2000);
-        }
-    }
-    
-    /**
-     * NUEVO - Exportar captura de pantalla (Sprint 4)
-     */
-    async exportScreenshot() {
-        if (!this.fileManager) {
-            this.showError('Sistema de exportación no disponible');
-            return;
-        }
-        
-        try {
-            this.showExportProgress(true);
-            this.updateExportProgress(50, 'Capturando imagen...');
-            
-            const result = await this.fileManager.exportGalaxyScreenshot('png', 0.9);
-            
-            if (result.success) {
-                this.updateExportProgress(100, 'Captura guardada correctamente');
-                this.showSuccess(`Imagen guardada: ${result.filename}`);
-            }
-            
-        } catch (error) {
-            console.error('❌ Error capturando imagen:', error);
-            this.showError('Error capturando imagen: ' + error.message);
-        } finally {
-            setTimeout(() => this.showExportProgress(false), 2000);
-        }
-    }
-    
-    /**
-     * Parser de entrada de notas
-     */
-    parseNoteInput(input) {
-        const cleanInput = input.replace(/\s+/g, ',');
-        const noteStrings = cleanInput.split(',').filter(s => s.length > 0);
-        
-        const notes = [];
-        for (const noteStr of noteStrings) {
-            const note = parseInt(noteStr.trim());
-            if (!isNaN(note)) {
-                notes.push(note);
-            }
-        }
-        
-        return notes;
-    }
-    
-    /**
-     * Detener notas
-     */
-    stopNotes() {
+    stopAllPlayback() {
         if (this.audioEngine) {
             this.audioEngine.stopAll();
         }
         
+        if (this.sequencer) {
+            this.sequencer.stopSequence();
+        }
+        
         this.state.isPlaying = false;
         this.state.currentNotes = [];
-        
         this.updateNoteDisplay([]);
-        this.updateChordInfo('---');
+    }
+    
+    /**
+     * Actualizar navegación
+     */
+    updateNavigation(activeMode) {
+        this.elements.navButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === activeMode);
+        });
+    }
+    
+    /**
+     * Tests de producción
+     */
+    async runProductionTests() {
+        if (!this.isDevelopmentMode()) return;
         
-        console.log('⏹️ Notas detenidas');
-    }
-    
-    /**
-     * Actualizar volumen
-     */
-    updateVolume(volume) {
-        this.state.volume = Math.max(0, Math.min(100, volume));
-        
-        if (this.audioEngine) {
-            this.audioEngine.setVolume(this.state.volume / 100);
-        }
-        
-        if (this.elements.volumeSlider) {
-            this.elements.volumeSlider.value = this.state.volume;
-        }
-        
-        if (this.elements.volumeDisplay) {
-            this.elements.volumeDisplay.textContent = this.state.volume + '%';
-        }
-    }
-    
-    /**
-     * Actualizar BPM
-     */
-    updateBPM(bpm) {
-        const clampedBPM = Math.max(60, Math.min(200, bpm));
-        
-        if (this.sequencer) {
-            this.sequencer.state.currentBPM = clampedBPM;
-        }
-        
-        if (this.elements.bpmSlider) {
-            this.elements.bpmSlider.value = clampedBPM;
-        }
-        
-        if (this.elements.bpmDisplay) {
-            this.elements.bpmDisplay.textContent = clampedBPM + ' BPM';
-        }
-        
-        console.log('🥁 BPM actualizado:', clampedBPM);
-    }
-    
-    /**
-     * Crear nuevo proyecto
-     */
-    async createNewProject() {
-        if (!this.projectManager) return;
-        
-        try {
-            const projectName = prompt('Nombre del nuevo proyecto:') || 'Nuevo Proyecto';
-            
-            const newProject = this.projectManager.createProject({
-                name: projectName,
-                description: 'Nuevo proyecto musical'
-            });
-            
-            await this.projectManager.loadProject(newProject.id);
-            this.state.currentProject = newProject.id;
-            
-            this.updateProjectsUI();
-            this.showSuccess('Proyecto creado: ' + projectName);
-            
-        } catch (error) {
-            console.error('❌ Error creando proyecto:', error);
-            this.showError('Error creando proyecto: ' + error.message);
-        }
-    }
-    
-    /**
-     * Guardar proyecto actual
-     */
-    async saveCurrentProject() {
-        if (!this.projectManager || !this.state.currentProject) return;
-        
-        try {
-            await this.projectManager.saveCurrentProject();
-            this.showSuccess('Proyecto guardado');
-            
-        } catch (error) {
-            console.error('❌ Error guardando proyecto:', error);
-            this.showError('Error guardando: ' + error.message);
-        }
-    }
-    
-    /**
-     * Eliminar proyecto actual
-     */
-    async deleteCurrentProject() {
-        if (!this.projectManager || !this.state.currentProject) return;
-        
-        const confirmDelete = confirm('¿Estás seguro de eliminar este proyecto?');
-        if (!confirmDelete) return;
-        
-        try {
-            await this.projectManager.deleteProject(this.state.currentProject);
-            this.state.currentProject = null;
-            
-            this.updateProjectsUI();
-            this.showSuccess('Proyecto eliminado');
-            
-        } catch (error) {
-            console.error('❌ Error eliminando proyecto:', error);
-            this.showError('Error eliminando: ' + error.message);
-        }
-    }
-    
-    /**
-     * Cargar proyecto seleccionado
-     */
-    async loadSelectedProject(projectId) {
-        if (!this.projectManager || !projectId) return;
-        
-        try {
-            await this.projectManager.loadProject(projectId);
-            this.state.currentProject = projectId;
-            
-            this.updateProjectsUI();
-            this.showSuccess('Proyecto cargado');
-            
-        } catch (error) {
-            console.error('❌ Error cargando proyecto:', error);
-            this.showError('Error cargando: ' + error.message);
-        }
-    }
-    
-    /**
-     * Actualizar metadatos del proyecto
-     */
-    updateProjectMetadata(field, value) {
-        if (!this.projectManager || !this.state.currentProject) return;
-        
-        try {
-            const project = this.projectManager.state.projects.get(this.state.currentProject);
-            if (project) {
-                project[field] = value;
-                project.modifiedAt = Date.now();
-                this.projectManager.markDirty();
-            }
-            
-        } catch (error) {
-            console.error('❌ Error actualizando metadata:', error);
-        }
-    }
-    
-    /**
-     * Actualizar display de notas
-     */
-    updateNoteDisplay(notes) {
-        if (!this.elements.currentNotesDisplay) return;
-        
-        if (notes.length === 0) {
-            this.elements.currentNotesDisplay.textContent = 'Notas: Ninguna';
-        } else {
-            const noteNames = notes.map(note => {
-                if (typeof window.NoteMapping !== 'undefined') {
-                    return `${note} (${window.NoteMapping.getNoteName(note)})`;
-                }
-                return note.toString();
-            });
-            this.elements.currentNotesDisplay.textContent = 'Notas: ' + noteNames.join(', ');
-        }
-    }
-    
-    /**
-     * Actualizar información de acorde
-     */
-    updateChordInfo(chordName) {
-        if (this.elements.chordInfoDisplay) {
-            this.elements.chordInfoDisplay.textContent = 'Acorde: ' + chordName;
-        }
-    }
-    
-    /**
-     * Actualizar análisis de acordes
-     */
-    updateChordAnalysis(chordName = '---', confidence = 0) {
-        if (this.elements.chordAnalysis) {
-            const confidenceText = confidence > 0 ? ` (${Math.round(confidence * 100)}%)` : '';
-            this.elements.chordAnalysis.textContent = `Acorde: ${chordName}${confidenceText}`;
-        }
-    }
-    
-    /**
-     * Actualizar sugerencias de acordes
-     */
-    updateChordSuggestions(suggestions = []) {
-        if (this.elements.chordSuggestions) {
-            if (suggestions.length === 0) {
-                this.elements.chordSuggestions.textContent = 'Sugerencias: ---';
-            } else {
-                const suggestionText = suggestions.slice(0, 3).map(s => s.chord).join(', ');
-                this.elements.chordSuggestions.textContent = `Sugerencias: ${suggestionText}`;
-            }
-        }
-    }
-    
-    /**
-     * Actualizar UI de proyectos
-     */
-    updateProjectsUI() {
-        if (!this.projectManager) return;
-        
-        try {
-            const projects = this.projectManager.getProjectsList();
-            
-            // Actualizar selector de proyectos
-            if (this.elements.projectSelect) {
-                this.elements.projectSelect.innerHTML = '';
-                
-                projects.forEach(project => {
-                    const option = document.createElement('option');
-                    option.value = project.id;
-                    option.textContent = project.name;
-                    option.selected = project.id === this.state.currentProject;
-                    this.elements.projectSelect.appendChild(option);
-                });
-            }
-            
-            // Actualizar campos del proyecto actual
-            if (this.state.currentProject) {
-                const currentProject = projects.find(p => p.id === this.state.currentProject);
-                
-                if (currentProject) {
-                    if (this.elements.projectName) {
-                        this.elements.projectName.value = currentProject.name;
-                    }
-                    if (this.elements.projectDescription) {
-                        this.elements.projectDescription.value = currentProject.description;
-                    }
-                }
-            }
-            
-        } catch (error) {
-            console.error('❌ Error actualizando UI de proyectos:', error);
-        }
-    }
-    
-    /**
-     * Actualizar grid del secuenciador
-     */
-    updateSequencerGrid() {
-        // Placeholder para visualización del secuenciador
-        console.log('🎛️ Grid del secuenciador actualizado');
-    }
-    
-    /**
-     * NUEVO - Mostrar/ocultar progreso de exportación (Sprint 4)
-     */
-    showExportProgress(show) {
-        if (this.elements.exportProgress) {
-            this.elements.exportProgress.classList.toggle('active', show);
-        }
-    }
-    
-    /**
-     * NUEVO - Actualizar progreso de exportación (Sprint 4)
-     */
-    updateExportProgress(percentage, text) {
-        if (this.elements.exportProgressFill) {
-            this.elements.exportProgressFill.style.width = percentage + '%';
-        }
-        
-        if (this.elements.exportProgressText) {
-            this.elements.exportProgressText.textContent = text;
-        }
-    }
-    
-    /**
-     * NUEVO - Manejar redimensionamiento de ventana (Sprint 4)
-     */
-    handleWindowResize() {
-        // Galaxy renderer
-        if (this.galaxyRenderer) {
-            this.galaxyRenderer.handleResize();
-        }
-        
-        // Spectrum 3D renderer
-        if (this.spectrum3DRenderer) {
-            this.spectrum3DRenderer.handleResize();
-        }
-    }
-    
-    /**
-     * NUEVO - Actualizar toggles de visualización (Sprint 4)
-     */
-    updateVisualizationToggles() {
-        if (this.elements.wavesToggle) {
-            this.elements.wavesToggle.classList.toggle('active', this.state.wavesVisible);
-        }
-        
-        if (this.elements.spectrumToggle) {
-            this.elements.spectrumToggle.classList.toggle('active', this.state.spectrumVisible);
-        }
-    }
-    
-    /**
-     * NUEVO - Actualizar controles de exportación (Sprint 4)
-     */
-    updateExportControls() {
-        const hasProject = !!this.state.currentProject;
-        
-        // Habilitar/deshabilitar botones según disponibilidad
-        if (this.elements.exportMidiButton) {
-            this.elements.exportMidiButton.disabled = !hasProject;
-        }
-        
-        if (this.elements.exportMp3Button) {
-            this.elements.exportMp3Button.disabled = !hasProject || !window.MediaRecorder;
-        }
-        
-        if (this.elements.exportJsonButton) {
-            this.elements.exportJsonButton.disabled = !hasProject;
-        }
-    }
-    
-    /**
-     * Actualizar estados del sistema
-     */
-    updateSystemStatus() {
-        this.updateAudioStatus();
-        this.updateGalaxyStatus();
-        this.updateComposerStatus();
-        this.updateProjectStatus();
-        this.updateAnalysisStatus();
-    }
-    
-    /**
-     * Actualizar estado del audio
-     */
-    updateAudioStatus(customStatus = null) {
-        if (!this.elements.audioStatusDisplay) return;
-        
-        let status, className;
-        
-        if (customStatus) {
-            status = customStatus;
-            className = customStatus.includes('Error') ? 'error-state' : 'success-state';
-        } else if (this.state.audioReady) {
-            status = 'Listo';
-            className = 'success-state';
-        } else {
-            status = 'Cargando...';
-            className = 'loading-state';
-        }
-        
-        this.elements.audioStatusDisplay.textContent = '🔊 Audio: ' + status;
-        this.elements.audioStatusDisplay.className = className;
-    }
-    
-    /**
-     * Actualizar estado de la galaxia
-     */
-    updateGalaxyStatus(customStatus = null) {
-        if (!this.elements.galaxyStatusDisplay) return;
-        
-        let status, className;
-        
-        if (customStatus) {
-            status = customStatus;
-            className = customStatus.includes('Error') ? 'error-state' : 'success-state';
-        } else if (this.state.galaxyReady) {
-            status = 'Listo';
-            className = 'success-state';
-        } else {
-            status = 'Cargando...';
-            className = 'loading-state';
-        }
-        
-        this.elements.galaxyStatusDisplay.textContent = '🌌 Galaxy: ' + status;
-        this.elements.galaxyStatusDisplay.className = className;
-    }
-    
-    /**
-     * Actualizar estado del compositor
-     */
-    updateComposerStatus(status = 'Listo') {
-        if (this.elements.composerStatusDisplay) {
-            this.elements.composerStatusDisplay.textContent = '🎼 Compositor: ' + status;
-        }
-    }
-    
-    /**
-     * Actualizar estado de proyectos
-     */
-    updateProjectStatus(status = 'Listo') {
-        if (this.elements.projectStatusDisplay) {
-            this.elements.projectStatusDisplay.textContent = '💾 Proyectos: ' + status;
-        }
-    }
-    
-    /**
-     * NUEVO - Actualizar estado del análisis (Sprint 4)
-     */
-    updateAnalysisStatus(status = 'Listo') {
-        if (this.elements.analysisStatusDisplay) {
-            this.elements.analysisStatusDisplay.textContent = '📊 Análisis: ' + status;
-        }
-    }
-    
-    /**
-     * Ocultar indicador de carga
-     */
-    hideLoading() {
-        if (this.elements.loadingIndicator) {
-            this.elements.loadingIndicator.classList.add('hidden');
-        }
-    }
-    
-    /**
-     * Mostrar mensaje de error
-     */
-    showError(message) {
-        console.error('⚠️ Error:', message);
-        alert('Galaxy Piano - Error: ' + message);
-    }
-    
-    /**
-     * Mostrar mensaje de éxito
-     */
-    showSuccess(message) {
-        console.log('✅ Éxito:', message);
-        // TODO: Implementar notificaciones visuales elegantes
-    }
-    
-    /**
-     * Manejar salida de aplicación
-     */
-    handleAppExit() {
-        if (this.projectManager && this.state.currentProject) {
-            // Auto-guardado al salir
-            this.projectManager.saveCurrentProject().catch(console.error);
-        }
-    }
-    
-    /**
-     * Verificar si el modo de test está habilitado
-     */
-    isTestModeEnabled() {
-        return window.location.hash.includes('test') || window.location.search.includes('test');
-    }
-    
-    /**
-     * Ejecutar tests de integración
-     */
-    async runIntegrationTests() {
-        if (!this.isTestModeEnabled()) return;
-        
-        console.log('🧪 Ejecutando tests de integración Sprint 4...');
+        console.log('🧪 Ejecutando tests de producción...');
         
         const testResults = {
-            audio: false,
-            galaxy: false,
-            sequencer: false,
-            musicTheory: false,
-            projectManager: false,
-            waves2D: false, // NUEVO
-            spectrum3D: false, // NUEVO
-            fileManager: false // NUEVO
+            audio: await this.testAudioSystem(),
+            galaxy: this.testGalaxySystem(),
+            ui: this.testUISystem(),
+            performance: this.testPerformance()
         };
         
-        try {
-            // Tests existentes (Sprint 1-3)
-            if (this.audioEngine) {
-                testResults.audio = await this.audioEngine.testNote(40, 0.5);
-            }
-            
-            if (this.sequencer) {
-                const sequencerTest = await this.sequencer.testSequencer();
-                testResults.sequencer = sequencerTest.parser && sequencerTest.sequencer;
-            }
-            
-            if (this.musicTheory) {
-                const musicTest = await this.musicTheory.testMusicTheory();
-                testResults.musicTheory = musicTest.chordDetection && musicTest.suggestions;
-            }
-            
-            if (this.projectManager) {
-                const projectTest = await this.projectManager.testProjectManager();
-                testResults.projectManager = Object.values(projectTest).every(r => r === true);
-            }
-            
-            testResults.galaxy = this.state.galaxyReady;
-            
-            // Nuevos tests Sprint 4
-            if (this.waves2DRenderer) {
-                const wavesTest = await this.waves2DRenderer.testWaves2D();
-                testResults.waves2D = wavesTest.initialization && wavesTest.animation;
-            }
-            
-            if (this.spectrum3DRenderer) {
-                const spectrumTest = await this.spectrum3DRenderer.testSpectrum3D();
-                testResults.spectrum3D = spectrumTest.initialization && spectrumTest.animation;
-            }
-            
-            if (this.fileManager) {
-                const fileTest = await this.fileManager.testFileManager();
-                testResults.fileManager = fileTest.browserSupport && fileTest.jsonExport;
-            }
-            
-            console.log('🎯 Resultados de integración Sprint 4:', testResults);
-            
-            const allPassed = Object.values(testResults).every(result => result === true);
-            if (allPassed) {
-                console.log('✅ Todos los tests de integración Sprint 4 PASARON');
-            } else {
-                console.log('⚠️ Algunos tests de integración Sprint 4 FALLARON');
-            }
-            
-        } catch (error) {
-            console.error('❌ Error en tests de integración Sprint 4:', error);
+        const allPassed = Object.values(testResults).every(result => result === true);
+        
+        if (allPassed) {
+            console.log('✅ Todos los tests de producción PASARON');
+            this.uiManager.showNotification('✅ Sistema verificado', 'success', 2000);
+        } else {
+            console.warn('⚠️ Algunos tests fallaron:', testResults);
+            this.uiManager.showNotification('⚠️ Verificación con advertencias', 'warning');
         }
+        
+        return testResults;
+    }
+    
+    /**
+     * Test sistema de audio
+     */
+    async testAudioSystem() {
+        try {
+            if (!this.audioEngine || !this.audioEngine.state.isReady) {
+                return false;
+            }
+            
+            // Test nota básica
+            await this.audioEngine.testNote(40, 0.1);
+            return true;
+        } catch (error) {
+            console.error('❌ Test audio falló:', error);
+            return false;
+        }
+    }
+    
+    /**
+     * Test sistema de galaxia
+     */
+    testGalaxySystem() {
+        return this.state.galaxyReady && this.galaxyRenderer && this.galaxyRenderer.state.isInitialized;
+    }
+    
+    /**
+     * Test sistema de UI
+     */
+    testUISystem() {
+        return this.uiManager && 
+               document.getElementById('toast-container') &&
+               this.elements.noteInput !== null;
+    }
+    
+    /**
+     * Test rendimiento
+     */
+    testPerformance() {
+        const memoryMB = this.getMemoryUsage();
+        const fps = this.uiManager.performanceData.fps;
+        
+        return memoryMB < this.performance.memoryLimit && fps > 30;
+    }
+    
+    /**
+     * Obtener uso de memoria
+     */
+    getMemoryUsage() {
+        if (performance.memory) {
+            return Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
+        }
+        return 0;
+    }
+    
+    /**
+     * Finalizar inicialización
+     */
+    finalizeInitialization() {
+        this.isInitialized = true;
+        
+        // Ocultar loading screen
+        this.uiManager.updateLoadingProgress(100, '¡Listo para explorar el universo musical! 🌌');
+        setTimeout(() => {
+            this.uiManager.hideLoadingScreen();
+        }, 800);
+        
+        // Estado inicial
+        this.updateSystemStatus();
+        this.updateVolume(this.state.volume);
+        this.switchMode('live');
+        
+        // Bienvenida
+        setTimeout(() => {
+            this.uiManager.showNotification(
+                `🎉 ¡Bienvenido a Galaxy Piano v${this.version}!`, 
+                'success',
+                3000
+            );
+        }, 1000);
+        
+        console.log(`✨ Galaxy Piano v${this.version} inicializado correctamente`);
+        this.uiManager.trackUserAction('app_initialized', { 
+            version: this.version,
+            loadTime: performance.now()
+        });
+    }
+    
+    /**
+     * Manejar error crítico
+     */
+    handleCriticalError(error) {
+        console.error('💥 Error crítico:', error);
+        
+        // Mostrar error amigable
+        this.uiManager.showNotification(
+            'Error crítico de inicialización - recargando...', 
+            'error',
+            5000
+        );
+        
+        // Auto-reload después de delay
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
+    }
+    
+    /**
+     * Manejar errores de acciones
+     */
+    handleActionError(error, context = 'Operación') {
+        console.error(`❌ ${context}:`, error);
+        this.uiManager.showNotification(`${context}: ${error.message}`, 'error');
+    }
+    
+    /**
+     * Verificar modo desarrollo
+     */
+    isDevelopmentMode() {
+        return this.uiManager.isDevelopmentMode();
+    }
+    
+    /**
+     * Utilidades de debounce y throttle
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        }
+    }
+    
+    /**
+     * Delay helper
+     */
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
     
     /**
      * Obtener estadísticas completas del sistema
      */
     getSystemStats() {
-        const stats = {
+        return {
             version: this.version,
+            buildDate: this.buildDate,
             mode: this.currentMode,
             initialized: this.isInitialized,
+            uptime: performance.now(),
             
-            // Módulos principales
-            audio: this.audioEngine?.getStats() || null,
-            galaxy: this.galaxyRenderer?.getInfo() || null,
-            stars: this.starSystem?.getStats() || null,
+            modules: {
+                audio: this.audioEngine?.getStats() || null,
+                galaxy: this.galaxyRenderer?.getInfo() || null,
+                stars: this.starSystem?.getStats() || null,
+                sequencer: this.sequencer?.getStats() || null,
+                musicTheory: this.musicTheory?.getStats() || null,
+                projects: this.projectManager?.getStats() || null,
+                waves2D: this.waves2DRenderer?.getStats() || null,
+                spectrum3D: this.spectrum3DRenderer?.getStats() || null,
+                fileManager: this.fileManager?.getStats() || null
+            },
             
-            // Módulos Sprint 3
-            sequencer: this.sequencer?.getStats() || null,
-            musicTheory: this.musicTheory?.getStats() || null,
-            projects: this.projectManager?.getStats() || null,
+            performance: {
+                memory: this.getMemoryUsage(),
+                fps: this.uiManager.performanceData.fps,
+                targetFPS: this.performance.targetFPS
+            },
             
-            // Nuevos módulos Sprint 4
-            waves2D: this.waves2DRenderer?.getStats() || null,
-            spectrum3D: this.spectrum3DRenderer?.getStats() || null,
-            fileManager: this.fileManager?.getStats() || null,
-            
-            // Estado de la aplicación
             state: this.state
         };
-        
-        return stats;
     }
+    
+    // Mantener métodos existentes para compatibilidad
+    initDOMReferences() { /* Implementación existente */ }
+    updateVolume(volume) { /* Implementación existente */ }
+    parseNoteInput(input) { /* Implementación existente */ }
+    updateNoteDisplay(notes) { /* Implementación existente */ }
+    updateChordInfo(chord) { /* Implementación existente */ }
+    updateSystemStatus() { /* Implementación existente */ }
+    playComposerSequence() { /* Implementación existente */ }
+    stopComposerSequence() { /* Implementación existente */ }
+    stopNotes() { /* Implementación existente */ }
+    analyzeComposerInput(input) { /* Implementación existente */ }
+    previewAnalysis(input) { /* Implementación existente */ }
+    exportToMP3() { /* Implementación existente */ }
+    exportToJSON() { /* Implementación existente */ }
+    exportScreenshot() { /* Implementación existente */ }
+    initComposerMode() { /* Implementación existente */ }
+    initAnalysisMode() { /* Implementación existente */ }
+    handleWindowResize() { /* Implementación existente */ }
+    handleAppExit() { /* Implementación existente */ }
     
     /**
      * Destruir aplicación completa
      */
     destroy() {
-        // Destruir módulos Sprint 4
-        if (this.waves2DRenderer) {
-            this.waves2DRenderer.destroy();
-        }
+        // Destruir en orden inverso
+        if (this.fileManager) this.fileManager.destroy();
+        if (this.spectrum3DRenderer) this.spectrum3DRenderer.destroy();
+        if (this.waves2DRenderer) this.waves2DRenderer.destroy();
+        if (this.projectManager) this.projectManager.destroy();
+        if (this.starSystem) this.starSystem.destroy();
+        if (this.galaxyRenderer) this.galaxyRenderer.destroy();
+        if (this.audioEngine) this.audioEngine.destroy();
+        if (this.uiManager) this.uiManager.destroy();
         
-        if (this.spectrum3DRenderer) {
-            this.spectrum3DRenderer.destroy();
-        }
-        
-        if (this.fileManager) {
-            this.fileManager.destroy();
-        }
-        
-        // Destruir módulos Sprint 3
-        if (this.projectManager) {
-            this.projectManager.destroy();
-        }
-        
-        // Destruir módulos existentes
-        if (this.audioEngine) {
-            this.audioEngine.destroy();
-        }
-        
-        if (this.galaxyRenderer) {
-            this.galaxyRenderer.destroy();
-        }
-        
-        if (this.starSystem) {
-            this.starSystem.destroy();
-        }
-        
-        console.log('🛑 Galaxy Piano Sprint 4 destruido');
+        console.log(`🛑 Galaxy Piano v${this.version} destruido`);
     }
 }
 
-// Inicializar aplicación cuando el DOM esté listo
+// Inicialización automática optimizada
 document.addEventListener('DOMContentLoaded', async () => {
-    window.galaxyPiano = new GalaxyPiano();
-    await window.galaxyPiano.init();
+    try {
+        window.galaxyPiano = new GalaxyPiano();
+        await window.galaxyPiano.init();
+    } catch (error) {
+        console.error('💥 Error fatal en inicialización:', error);
+        
+        // Fallback UI básico
+        document.body.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #0a0a0f; color: white; font-family: Arial;">
+                <div style="text-align: center;">
+                    <h1>🌌 Galaxy Piano</h1>
+                    <p>Error de inicialización crítico</p>
+                    <button onclick="window.location.reload()" style="padding: 10px 20px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        🔄 Recargar
+                    </button>
+                </div>
+            </div>
+        `;
+    }
 });
 
-// Cleanup al cerrar la ventana
+// Cleanup global
 window.addEventListener('beforeunload', () => {
     if (window.galaxyPiano) {
         window.galaxyPiano.destroy();

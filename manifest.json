@@ -1,0 +1,176 @@
+{
+    "name": "Galaxy Piano - Musical Universe",
+    "short_name": "Galaxy Piano",
+    "description": "Transforma música en estrellas. Piano virtual con visualización galáctica 3D, compositor inteligente y análisis musical avanzado.",
+    "version": "1.0.0",
+    "start_url": "./",
+    "display": "standalone",
+    "orientation": "landscape-primary",
+    "theme_color": "#0a0a0f",
+    "background_color": "#0a0a0f",
+    "scope": "./",
+    "lang": "es",
+    "dir": "ltr",
+    
+    "icons": [
+      {
+        "src": "./assets/icons/icon-72x72.png",
+        "sizes": "72x72",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "./assets/icons/icon-96x96.png",
+        "sizes": "96x96",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "./assets/icons/icon-128x128.png",
+        "sizes": "128x128",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "./assets/icons/icon-144x144.png",
+        "sizes": "144x144",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "./assets/icons/icon-152x152.png",
+        "sizes": "152x152",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "./assets/icons/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "./assets/icons/icon-384x384.png",
+        "sizes": "384x384",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "./assets/icons/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ],
+    
+    "categories": ["music", "entertainment", "education", "productivity"],
+    "keywords": ["piano", "música", "galaxia", "visualización", "audio", "compositor", "análisis musical"],
+    
+    "screenshots": [
+      {
+        "src": "./assets/screenshots/live-mode.jpg",
+        "sizes": "1280x720",
+        "type": "image/jpeg",
+        "platform": "wide",
+        "label": "Modo Live - Piano con visualización galáctica"
+      },
+      {
+        "src": "./assets/screenshots/composer-mode.jpg",
+        "sizes": "1280x720", 
+        "type": "image/jpeg",
+        "platform": "wide",
+        "label": "Modo Compositor - Secuenciador musical avanzado"
+      },
+      {
+        "src": "./assets/screenshots/analysis-mode.jpg",
+        "sizes": "1280x720",
+        "type": "image/jpeg", 
+        "platform": "wide",
+        "label": "Modo Análisis - Visualización espectral 3D"
+      }
+    ],
+    
+    "shortcuts": [
+      {
+        "name": "Modo Live",
+        "short_name": "Live",
+        "description": "Piano virtual directo",
+        "url": "./?mode=live",
+        "icons": [
+          {
+            "src": "./assets/icons/shortcut-live.png",
+            "sizes": "96x96"
+          }
+        ]
+      },
+      {
+        "name": "Compositor",
+        "short_name": "Composer",
+        "description": "Crear composiciones musicales",
+        "url": "./?mode=composer", 
+        "icons": [
+          {
+            "src": "./assets/icons/shortcut-composer.png",
+            "sizes": "96x96"
+          }
+        ]
+      },
+      {
+        "name": "Análisis",
+        "short_name": "Analysis", 
+        "description": "Análisis musical avanzado",
+        "url": "./?mode=analysis",
+        "icons": [
+          {
+            "src": "./assets/icons/shortcut-analysis.png",
+            "sizes": "96x96"
+          }
+        ]
+      }
+    ],
+    
+    "share_target": {
+      "action": "./share",
+      "method": "POST",
+      "enctype": "multipart/form-data",
+      "params": {
+        "files": [
+          {
+            "name": "audio",
+            "accept": ["audio/*", ".mid", ".midi", ".json"]
+          }
+        ]
+      }
+    },
+    
+    "file_handlers": [
+      {
+        "action": "./",
+        "accept": {
+          "audio/midi": [".mid", ".midi"],
+          "application/json": [".json"],
+          "audio/mpeg": [".mp3"]
+        }
+      }
+    ],
+    
+    "protocol_handlers": [
+      {
+        "protocol": "galaxy-piano",
+        "url": "./?action=%s"
+      }
+    ],
+    
+    "prefer_related_applications": false,
+    "related_applications": [],
+    
+    "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+    
+    "edge_side_panel": {
+      "preferred_width": 400
+    },
+    
+    "launch_handler": {
+      "client_mode": "focus-existing"
+    }
+  }
