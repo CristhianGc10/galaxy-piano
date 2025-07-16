@@ -1,0 +1,642 @@
+/* =================================
+   GALAXY PIANO - ANALYSIS MODE CSS
+   Estilos para visualización y exportación
+   Sprint 4 - Análisis y Exportación
+   ================================= */
+
+/* Analysis Mode Layout */
+#analysis-mode {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+        "waves spectrum"
+        "controls controls"
+        "galaxy galaxy"
+        "export export";
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    min-height: calc(100vh - 200px);
+}
+
+/* Waves 2D Panel */
+.waves-panel {
+    grid-area: waves;
+    background: var(--ui-glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+}
+
+.waves-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.waves-header h2 {
+    color: var(--ui-text);
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.waves-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.waves-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--ui-text);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+}
+
+.waves-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--ui-primary);
+}
+
+.waves-btn.active {
+    background: var(--ui-primary);
+    border-color: var(--ui-primary);
+    color: white;
+}
+
+.waves-canvas-container {
+    flex: 1;
+    position: relative;
+    min-height: 200px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+#waves-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: linear-gradient(45deg, #0a0a0f 0%, #1a1a2e 100%);
+}
+
+.waves-info {
+    margin-top: var(--spacing-sm);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ui-text-dim);
+}
+
+/* Spectrum 3D Panel */
+.spectrum-panel {
+    grid-area: spectrum;
+    background: var(--ui-glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+}
+
+.spectrum-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.spectrum-header h2 {
+    color: var(--ui-text);
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.spectrum-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.spectrum-canvas-container {
+    flex: 1;
+    position: relative;
+    min-height: 200px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+#spectrum-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+}
+
+#spectrum-canvas:active {
+    cursor: grabbing;
+}
+
+.spectrum-info {
+    margin-top: var(--spacing-sm);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ui-text-dim);
+}
+
+/* Analysis Controls Panel */
+.analysis-controls-panel {
+    grid-area: controls;
+    background: var(--ui-glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-subtle);
+}
+
+.analysis-input-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analysis-input-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.analysis-input-section label {
+    color: var(--ui-text);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.analysis-input {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--ui-border);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--ui-text);
+    font-size: 0.95rem;
+    font-family: var(--font-mono);
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+    min-width: 300px;
+}
+
+.analysis-input:focus {
+    outline: none;
+    border-color: var(--ui-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.analyze-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(45deg, var(--ui-accent), #ff6600);
+    border: 2px solid var(--ui-accent);
+    border-radius: var(--radius-md);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+}
+
+.analyze-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(255, 102, 0, 0.4);
+}
+
+.visualization-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.viz-toggle {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 2px solid var(--ui-border);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--ui-text);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+}
+
+.viz-toggle:hover {
+    border-color: var(--ui-primary);
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.viz-toggle.active {
+    background: var(--ui-primary);
+    border-color: var(--ui-primary);
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+}
+
+/* Export Panel */
+.export-panel {
+    grid-area: export;
+    background: var(--ui-glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-subtle);
+}
+
+.export-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.export-header h2 {
+    color: var(--ui-text);
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.export-status {
+    color: var(--ui-primary);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.export-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.export-btn {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 2px solid;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    min-height: 50px;
+}
+
+.export-midi {
+    background: linear-gradient(45deg, #9c27b0, #673ab7);
+    border-color: #9c27b0;
+    color: white;
+}
+
+.export-mp3 {
+    background: linear-gradient(45deg, #ff5722, #ff9800);
+    border-color: #ff5722;
+    color: white;
+}
+
+.export-json {
+    background: linear-gradient(45deg, #2196f3, #03a9f4);
+    border-color: #2196f3;
+    color: white;
+}
+
+.export-screenshot {
+    background: linear-gradient(45deg, #4caf50, #8bc34a);
+    border-color: #4caf50;
+    color: white;
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.export-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.export-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.option-group label {
+    color: var(--ui-text);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.option-select, .option-input {
+    padding: var(--spacing-sm);
+    border: 2px solid var(--ui-border);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--ui-text);
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+    backdrop-filter: blur(5px);
+}
+
+.option-select:focus, .option-input:focus {
+    outline: none;
+    border-color: var(--ui-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+}
+
+.option-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+}
+
+.option-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--ui-border);
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.option-checkbox input[type="checkbox"]:checked {
+    background: var(--ui-primary);
+    border-color: var(--ui-primary);
+}
+
+.option-checkbox label {
+    color: var(--ui-text-dim);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+/* Progress Bar */
+.export-progress {
+    margin-top: var(--spacing-lg);
+    display: none;
+}
+
+.export-progress.active {
+    display: block;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: var(--spacing-sm);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ui-primary), var(--ui-accent));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.progress-text {
+    text-align: center;
+    color: var(--ui-text);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+/* Galaxy Container in Analysis Mode */
+.analysis-galaxy {
+    grid-area: galaxy;
+    position: relative;
+    min-height: 400px;
+}
+
+/* Color Mode Selector */
+.color-mode-selector {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-left: var(--spacing-sm);
+}
+
+.color-mode-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--ui-text);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.color-mode-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.color-mode-btn.active {
+    background: var(--ui-primary);
+    border-color: var(--ui-primary);
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    #analysis-mode {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "controls"
+            "waves"
+            "spectrum"
+            "galaxy"
+            "export";
+    }
+    
+    .analysis-input-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+    }
+    
+    .analysis-input-section {
+        flex: none;
+    }
+}
+
+@media (max-width: 768px) {
+    #analysis-mode {
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+    }
+    
+    .waves-header, .spectrum-header, .export-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-sm);
+    }
+    
+    .waves-controls, .spectrum-controls {
+        justify-content: center;
+    }
+    
+    .export-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .export-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .visualization-controls {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .analysis-input {
+        min-width: auto;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .waves-panel, .spectrum-panel, .export-panel {
+        padding: var(--spacing-md);
+    }
+    
+    .waves-canvas-container, .spectrum-canvas-container {
+        min-height: 150px;
+    }
+    
+    .export-btn {
+        padding: var(--spacing-sm);
+        font-size: 0.9rem;
+        min-height: 40px;
+    }
+    
+    .color-mode-selector {
+        flex-wrap: wrap;
+    }
+}
+
+/* Dark Theme Enhancements */
+@media (prefers-color-scheme: dark) {
+    .waves-canvas-container, .spectrum-canvas-container {
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .analysis-input-panel {
+        background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .export-progress {
+        background: rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* Animation Enhancements */
+.waves-panel, .spectrum-panel, .export-panel {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.export-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.export-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: var(--transition-normal);
+}
+
+.export-btn:hover::before {
+    left: 100%;
+}
+
+/* Success/Error States */
+.export-success {
+    padding: var(--spacing-sm);
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid #4caf50;
+    border-radius: var(--radius-md);
+    color: #4caf50;
+    text-align: center;
+    margin-top: var(--spacing-sm);
+}
+
+.export-error {
+    padding: var(--spacing-sm);
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid #f44336;
+    border-radius: var(--radius-md);
+    color: #f44336;
+    text-align: center;
+    margin-top: var(--spacing-sm);
+}
