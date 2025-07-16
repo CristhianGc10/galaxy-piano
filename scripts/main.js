@@ -156,8 +156,11 @@ class GalaxyPiano {
             this.state.audioReady = true;
             console.log('🔊 Audio Engine inicializado');
             
+            this.updateAudioStatus('Listo');
+            
         } catch (error) {
             console.error('❌ Error inicializando audio:', error);
+            this.updateAudioStatus('Error: ' + error.message);
             this.showError('Error de audio: ' + error.message);
         }
     }
@@ -174,7 +177,7 @@ class GalaxyPiano {
             // Simular carga
             setTimeout(() => {
                 this.state.galaxyReady = true;
-                this.updateGalaxyStatus('Listo (Sprint 2)');
+                this.updateGalaxyStatus();
                 this.hideLoading();
             }, 2000);
             
@@ -182,6 +185,7 @@ class GalaxyPiano {
             
         } catch (error) {
             console.error('❌ Error preparando galaxy:', error);
+            this.updateGalaxyStatus('Error: ' + error.message);
             this.showError('Error de galaxia: ' + error.message);
         }
     }
@@ -346,8 +350,8 @@ class GalaxyPiano {
             this.elements.currentNotesDisplay.textContent = 'Notas: Ninguna';
         } else {
             const noteNames = notes.map(note => {
-                if (typeof NoteMapping !== 'undefined') {
-                    return NoteMapping.getNoteName(note);
+                if (typeof window.NoteMapping !== 'undefined') {
+                    return `${note} (${window.NoteMapping.getNoteName(note)})`;
                 }
                 return note.toString();
             });
@@ -396,27 +400,50 @@ class GalaxyPiano {
      * Actualizar estado del sistema
      */
     updateSystemStatus() {
-        // Audio status
-        if (this.state.audioReady) {
-            this.elements.audioStatusDisplay.textContent = '🔊 Audio: Listo';
-            this.elements.audioStatusDisplay.className = 'success-state';
+        this.updateAudioStatus();
+        this.updateGalaxyStatus();
+    }
+    
+    /**
+     * Actualizar estado del audio
+     */
+    updateAudioStatus(customStatus = null) {
+        let status, className;
+        
+        if (customStatus) {
+            status = customStatus;
+            className = customStatus.includes('Error') ? 'error-state' : 'success-state';
+        } else if (this.state.audioReady) {
+            status = 'Listo';
+            className = 'success-state';
         } else {
-            this.elements.audioStatusDisplay.textContent = '🔇 Audio: Cargando...';
-            this.elements.audioStatusDisplay.className = 'loading-state';
+            status = 'Cargando...';
+            className = 'loading-state';
         }
+        
+        this.elements.audioStatusDisplay.textContent = '🔊 Audio: ' + status;
+        this.elements.audioStatusDisplay.className = className;
     }
     
     /**
      * Actualizar estado de la galaxia
      */
-    updateGalaxyStatus(status) {
-        this.elements.galaxyStatusDisplay.textContent = '🌌 Galaxy: ' + status;
+    updateGalaxyStatus(customStatus = null) {
+        let status, className;
         
-        if (this.state.galaxyReady) {
-            this.elements.galaxyStatusDisplay.className = 'success-state';
+        if (customStatus) {
+            status = customStatus;
+            className = 'loading-state';
+        } else if (this.state.galaxyReady) {
+            status = 'Listo (Sprint 2)';
+            className = 'success-state';
         } else {
-            this.elements.galaxyStatusDisplay.className = 'loading-state';
+            status = 'Cargando...';
+            className = 'loading-state';
         }
+        
+        this.elements.galaxyStatusDisplay.textContent = '🌌 Galaxy: ' + status;
+        this.elements.galaxyStatusDisplay.className = className;
     }
     
     /**
