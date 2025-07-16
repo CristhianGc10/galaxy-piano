@@ -9,10 +9,6 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/galaxy.css">
     <link rel="stylesheet" href="styles/components.css">
-    
-    <!-- External Libraries CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -36,7 +32,7 @@
                         <input 
                             type="text" 
                             id="note-input" 
-                            placeholder="Ej: 40 (C4) o 40,43,47"
+                            placeholder="Ej: 40 (C4) o 40,43,47 (Em chord)"
                             class="note-input"
                         >
                         <button id="play-btn" class="play-btn">🎵 Tocar</button>
@@ -50,12 +46,44 @@
                     </div>
                 </div>
 
-                <!-- Galaxy Canvas -->
+                <!-- Galaxy Canvas Container -->
                 <div class="galaxy-container">
                     <canvas id="galaxy-canvas"></canvas>
+                    
+                    <!-- Loading Indicator -->
                     <div class="loading" id="loading">
                         <div class="loading-spinner"></div>
-                        <p>Cargando Universe Musical...</p>
+                        <p id="loading-text">Cargando Universe Musical...</p>
+                    </div>
+                    
+                    <!-- Stars Indicator -->
+                    <div class="stars-indicator" id="stars-indicator">
+                        ⭐ Estrellas Activas: <span id="stars-count">0</span>
+                    </div>
+                    
+                    <!-- Galaxy Controls -->
+                    <div class="galaxy-controls" id="galaxy-controls" style="display: none;">
+                        <button class="galaxy-control-btn" id="auto-rotate-btn">🔄 Auto</button>
+                        <button class="galaxy-control-btn" id="reset-view-btn">📷 Reset</button>
+                        <button class="galaxy-control-btn" id="test-star-btn">🧪 Test</button>
+                    </div>
+                    
+                    <!-- Galaxy Info -->
+                    <div class="galaxy-info" id="galaxy-info">
+                        <strong>🌌 Galaxy Piano</strong><br>
+                        Sprint 2: Sistema de Estrellas<br>
+                        <span id="performance-info">Inicializando...</span>
+                    </div>
+                </div>
+                
+                <!-- Test Section for Sprint 2 -->
+                <div class="controls-panel">
+                    <div class="input-group">
+                        <label>🧪 Tests Sprint 2:</label>
+                        <button class="play-btn" id="test-blue-btn" style="font-size: 0.9rem;">🔵 Azul (1)</button>
+                        <button class="play-btn" id="test-white-btn" style="font-size: 0.9rem;">⚪ Blanco (40)</button>
+                        <button class="play-btn" id="test-red-btn" style="font-size: 0.9rem;">🔴 Rojo (88)</button>
+                        <button class="stop-btn" id="debug-btn" style="font-size: 0.9rem;">🔍 Debug</button>
                     </div>
                 </div>
             </section>
@@ -85,19 +113,175 @@
                     <span id="chord-info">Acorde: ---</span>
                 </div>
                 <div class="system-info">
-                    <span id="audio-status">🔊 Audio: Listo</span>
+                    <span id="audio-status">🔊 Audio: Cargando...</span>
                     <span id="galaxy-status">🌌 Galaxy: Cargando...</span>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- Scripts -->
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" 
+            onload="console.log('✅ Three.js cargado')"
+            onerror="console.error('❌ Error cargando Three.js')"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"
+            onload="console.log('✅ Tone.js cargado')"
+            onerror="console.error('❌ Error cargando Tone.js')"></script>
+
+    <!-- Galaxy Piano Scripts en ORDEN CORRECTO -->
     <script src="scripts/utils/helpers.js"></script>
     <script src="scripts/audio/noteMapping.js"></script>
     <script src="scripts/audio/audioEngine.js"></script>
-    <script src="scripts/visual/galaxyRenderer.js"></script>
+    <script src="scripts/visual/galaxyRender.js"></script>
     <script src="scripts/visual/starSystem.js"></script>
     <script src="scripts/main.js"></script>
+    
+    <!-- Event Listeners y Inicialización -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 DOM cargado, configurando eventos...');
+            
+            // Event listeners para botones de test
+            document.getElementById('test-blue-btn')?.addEventListener('click', () => {
+                console.log('🧪 Test Azul - Nota 1');
+                if (window.galaxyPiano?.starSystem) {
+                    window.galaxyPiano.starSystem.testStar(1, 3.0);
+                } else {
+                    console.log('⚠️ StarSystem no disponible');
+                }
+            });
+            
+            document.getElementById('test-white-btn')?.addEventListener('click', () => {
+                console.log('🧪 Test Blanco - Nota 40');
+                if (window.galaxyPiano?.starSystem) {
+                    window.galaxyPiano.starSystem.testStar(40, 3.0);
+                } else {
+                    console.log('⚠️ StarSystem no disponible');
+                }
+            });
+            
+            document.getElementById('test-red-btn')?.addEventListener('click', () => {
+                console.log('🧪 Test Rojo - Nota 88');
+                if (window.galaxyPiano?.starSystem) {
+                    window.galaxyPiano.starSystem.testStar(88, 3.0);
+                } else {
+                    console.log('⚠️ StarSystem no disponible');
+                }
+            });
+            
+            document.getElementById('debug-btn')?.addEventListener('click', () => {
+                console.log('🔍 DEBUG INFO:');
+                console.log('================');
+                console.log('GalaxyPiano:', window.galaxyPiano ? '✅' : '❌');
+                console.log('AudioEngine:', window.galaxyPiano?.audioEngine ? '✅' : '❌');
+                console.log('GalaxyRenderer:', window.galaxyPiano?.galaxyRenderer ? '✅' : '❌');
+                console.log('StarSystem:', window.galaxyPiano?.starSystem ? '✅' : '❌');
+                
+                if (window.galaxyPiano?.starSystem) {
+                    window.galaxyPiano.starSystem.debugStars();
+                }
+                if (window.galaxyPiano?.galaxyRenderer) {
+                    console.table(window.galaxyPiano.galaxyRenderer.getInfo());
+                }
+            });
+            
+            // Controls
+            document.getElementById('auto-rotate-btn')?.addEventListener('click', () => {
+                if (window.galaxyPiano?.galaxyRenderer) {
+                    window.galaxyPiano.galaxyRenderer.toggleAutoRotate();
+                }
+            });
+            
+            document.getElementById('reset-view-btn')?.addEventListener('click', () => {
+                if (window.galaxyPiano?.galaxyRenderer) {
+                    window.galaxyPiano.galaxyRenderer.resetCamera();
+                }
+            });
+            
+            document.getElementById('test-star-btn')?.addEventListener('click', () => {
+                if (window.galaxyPiano?.starSystem) {
+                    window.galaxyPiano.starSystem.testStar(40, 3.0);
+                }
+            });
+            
+            // Mostrar controles cuando esté listo
+            setTimeout(() => {
+                if (window.galaxyPiano?.state?.galaxyReady) {
+                    document.getElementById('galaxy-controls').style.display = 'flex';
+                }
+            }, 3000);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey) {
+                    switch(e.key) {
+                        case '1': 
+                            e.preventDefault();
+                            document.getElementById('test-blue-btn')?.click();
+                            break;
+                        case '2':
+                            e.preventDefault(); 
+                            document.getElementById('test-white-btn')?.click();
+                            break;
+                        case '3':
+                            e.preventDefault();
+                            document.getElementById('test-red-btn')?.click();
+                            break;
+                        case 'd':
+                            e.preventDefault();
+                            document.getElementById('debug-btn')?.click();
+                            break;
+                    }
+                }
+            });
+            
+            console.log('🎯 Event listeners configurados');
+            console.log('⌨️ Shortcuts: Ctrl+1,2,3 para tests, Ctrl+D para debug');
+        });
+        
+        // Actualizar indicadores
+        setInterval(() => {
+            if (window.galaxyPiano?.starSystem) {
+                const stats = window.galaxyPiano.starSystem.getStats();
+                const starsCount = document.getElementById('stars-count');
+                const starsIndicator = document.getElementById('stars-indicator');
+                
+                if (starsCount) {
+                    starsCount.textContent = stats.memory.activeStars;
+                }
+                
+                if (starsIndicator) {
+                    if (stats.memory.activeStars > 0) {
+                        starsIndicator.classList.add('active');
+                    } else {
+                        starsIndicator.classList.remove('active');
+                    }
+                }
+            }
+        }, 500);
+    </script>
+    
+    <!-- Diagnóstico final -->
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('\n🎉 GALAXY PIANO SPRINT 2');
+                console.log('========================');
+                console.log('Three.js:', typeof THREE !== 'undefined' ? '✅' : '❌');
+                console.log('GalaxyRenderer:', typeof GalaxyRenderer !== 'undefined' ? '✅' : '❌');
+                console.log('StarSystem:', typeof StarSystem !== 'undefined' ? '✅' : '❌');
+                console.log('AudioEngine:', typeof AudioEngine !== 'undefined' ? '✅' : '❌');
+                console.log('GalaxyPiano:', window.galaxyPiano ? '✅' : '❌');
+                
+                if (window.galaxyPiano) {
+                    console.log('\n🚀 ¡SPRINT 2 LISTO!');
+                    console.log('Prueba escribir "40" y hacer clic en "🎵 Tocar"');
+                } else {
+                    console.log('\n❌ Hay problemas de inicialización');
+                }
+            }, 2000);
+        });
+    </script>
 </body>
 </html>

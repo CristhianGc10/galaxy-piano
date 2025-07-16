@@ -1,12 +1,11 @@
 /**
  * GALAXY PIANO - MAIN APPLICATION
- * Arquitectura Modular y Punto de Entrada
- * Sprint 1 - Fundación
+ * Sprint 2 - Integración Audio + Visual COMPLETA
  */
 
 class GalaxyPiano {
     constructor() {
-        this.version = '1.0.0';
+        this.version = '2.0.0';
         this.currentMode = 'live';
         this.isInitialized = false;
         
@@ -21,46 +20,86 @@ class GalaxyPiano {
             currentNotes: [],
             isPlaying: false,
             audioReady: false,
-            galaxyReady: false
+            galaxyReady: false,
+            starSystemReady: false
         };
         
         // Referencias DOM
         this.elements = {};
         
         console.log('🌌 Galaxy Piano v' + this.version + ' iniciando...');
+        console.log('🎯 Sprint 2: Sistema de Estrellas Musicales');
     }
     
     /**
-     * Inicialización de la aplicación
+     * Inicialización completa de la aplicación
      */
     async init() {
         try {
-            console.log('🚀 Iniciando Galaxy Piano...');
+            console.log('🚀 Iniciando Galaxy Piano Sprint 2...');
             
-            // 1. Obtener referencias DOM
+            // 1. Verificar dependencias
+            this.checkDependencies();
+            
+            // 2. Obtener referencias DOM
             this.initDOMReferences();
             
-            // 2. Configurar event listeners
+            // 3. Configurar event listeners
             this.setupEventListeners();
             
-            // 3. Inicializar audio engine
+            // 4. Inicializar audio engine
             await this.initAudioEngine();
             
-            // 4. Inicializar galaxy renderer (preparación)
-            this.initGalaxyRenderer();
+            // 5. Inicializar galaxy renderer
+            await this.initGalaxyRenderer();
             
-            // 5. Configurar interfaz inicial
+            // 6. Inicializar star system
+            await this.initStarSystem();
+            
+            // 7. Configurar interfaz inicial
             this.setupInitialUI();
             
             this.isInitialized = true;
-            console.log('✅ Galaxy Piano inicializado correctamente');
+            console.log('✅ Galaxy Piano Sprint 2 inicializado correctamente');
             
             this.updateSystemStatus();
+            this.hideLoading();
+            
+            // Test inicial
+            setTimeout(() => this.runInitialTest(), 1000);
             
         } catch (error) {
             console.error('❌ Error inicializando Galaxy Piano:', error);
             this.showError('Error de inicialización: ' + error.message);
         }
+    }
+    
+    /**
+     * Verificar que todas las dependencias estén cargadas
+     */
+    checkDependencies() {
+        const dependencies = {
+            'Three.js': typeof THREE !== 'undefined',
+            'AudioEngine': typeof AudioEngine !== 'undefined',
+            'GalaxyRenderer': typeof GalaxyRenderer !== 'undefined',
+            'StarSystem': typeof StarSystem !== 'undefined',
+            'NoteMapping': typeof window.NoteMapping !== 'undefined'
+        };
+        
+        console.log('🔍 Verificando dependencias:');
+        let allOk = true;
+        
+        Object.entries(dependencies).forEach(([name, available]) => {
+            const status = available ? '✅' : '❌';
+            console.log(`   ${status} ${name}`);
+            if (!available) allOk = false;
+        });
+        
+        if (!allOk) {
+            throw new Error('Dependencias faltantes. Verificar carga de scripts.');
+        }
+        
+        console.log('✅ Todas las dependencias disponibles');
     }
     
     /**
@@ -94,7 +133,12 @@ class GalaxyPiano {
             galaxyStatusDisplay: document.getElementById('galaxy-status')
         };
         
-        console.log('📋 Referencias DOM obtenidas');
+        // Verificar elementos críticos
+        if (!this.elements.galaxyCanvas) {
+            throw new Error('Canvas #galaxy-canvas no encontrado');
+        }
+        
+        console.log('📋 Referencias DOM obtenidas y verificadas');
     }
     
     /**
@@ -146,15 +190,13 @@ class GalaxyPiano {
      */
     async initAudioEngine() {
         try {
-            if (typeof AudioEngine === 'undefined') {
-                throw new Error('AudioEngine no está disponible');
-            }
+            console.log('🔊 Inicializando Audio Engine...');
             
             this.audioEngine = new AudioEngine();
             await this.audioEngine.init();
             
             this.state.audioReady = true;
-            console.log('🔊 Audio Engine inicializado');
+            console.log('✅ Audio Engine listo');
             
             this.updateAudioStatus('Listo');
             
@@ -168,25 +210,53 @@ class GalaxyPiano {
     /**
      * Inicializar renderer de galaxia
      */
-    initGalaxyRenderer() {
+    async initGalaxyRenderer() {
         try {
-            // Por ahora solo preparamos el contenedor
-            // En Sprint 2 implementaremos el renderer 3D completo
-            this.updateGalaxyStatus('Preparando espacio 3D...');
+            console.log('🌌 Inicializando Galaxy Renderer...');
+            this.updateGalaxyStatus('Inicializando espacio 3D...');
             
-            // Simular carga
-            setTimeout(() => {
-                this.state.galaxyReady = true;
-                this.updateGalaxyStatus();
-                this.hideLoading();
-            }, 2000);
+            // Crear instancia del renderer
+            this.galaxyRenderer = new GalaxyRenderer(this.elements.galaxyCanvas);
             
-            console.log('🌌 Galaxy Renderer preparado');
+            // Inicializar
+            await this.galaxyRenderer.init();
+            
+            this.state.galaxyReady = true;
+            console.log('✅ Galaxy Renderer listo');
+            
+            this.updateGalaxyStatus('Espacio 3D listo');
             
         } catch (error) {
-            console.error('❌ Error preparando galaxy:', error);
+            console.error('❌ Error inicializando galaxy renderer:', error);
             this.updateGalaxyStatus('Error: ' + error.message);
-            this.showError('Error de galaxia: ' + error.message);
+            throw error;
+        }
+    }
+    
+    /**
+     * Inicializar sistema de estrellas
+     */
+    async initStarSystem() {
+        try {
+            console.log('⭐ Inicializando Star System...');
+            this.updateGalaxyStatus('Configurando estrellas...');
+            
+            if (!this.galaxyRenderer) {
+                throw new Error('GalaxyRenderer debe estar inicializado primero');
+            }
+            
+            // Crear instancia del sistema de estrellas
+            this.starSystem = new StarSystem(this.galaxyRenderer);
+            
+            this.state.starSystemReady = true;
+            console.log('✅ Star System listo');
+            
+            this.updateGalaxyStatus('Listo');
+            
+        } catch (error) {
+            console.error('❌ Error inicializando star system:', error);
+            this.updateGalaxyStatus('Error: ' + error.message);
+            throw error;
         }
     }
     
@@ -205,6 +275,24 @@ class GalaxyPiano {
         this.updateChordInfo('---');
         
         console.log('🎨 UI inicial configurada');
+    }
+    
+    /**
+     * Test inicial del sistema
+     */
+    runInitialTest() {
+        console.log('🧪 Ejecutando test inicial...');
+        
+        if (this.state.audioReady && this.state.galaxyReady && this.state.starSystemReady) {
+            console.log('✅ Todos los sistemas listos');
+            console.log('🎯 Prueba escribir "40" y hacer clic en "🎵 Tocar"');
+            console.log('🎨 O usa los botones de test de colores');
+        } else {
+            console.log('⚠️ Algunos sistemas no están listos:');
+            console.log('   Audio:', this.state.audioReady ? '✅' : '❌');
+            console.log('   Galaxy:', this.state.galaxyReady ? '✅' : '❌');
+            console.log('   Stars:', this.state.starSystemReady ? '✅' : '❌');
+        }
     }
     
     /**
@@ -240,7 +328,7 @@ class GalaxyPiano {
     }
     
     /**
-     * Reproducir notas desde el input
+     * Reproducir notas con integración audio-visual completa
      */
     async playNotes() {
         if (!this.state.audioReady) {
@@ -272,19 +360,25 @@ class GalaxyPiano {
             
             console.log('🎵 Reproduciendo notas:', notes);
             
-            // Reproducir con audio engine
-            await this.audioEngine.playNotes(notes);
+            // 1. REPRODUCIR AUDIO
+            await this.audioEngine.playNotes(notes, 3.0); // 3 segundos
             
-            // Actualizar estado
+            // 2. CREAR ESTRELLAS (integración visual)
+            if (this.starSystem && this.state.starSystemReady) {
+                const stars = this.starSystem.createStars(notes, 3.0, 1.0);
+                console.log('⭐ Estrellas creadas:', stars.length);
+            } else {
+                console.log('⚠️ StarSystem no disponible');
+            }
+            
+            // 3. ACTUALIZAR UI
             this.state.currentNotes = notes;
             this.state.isPlaying = true;
             
-            // Actualizar UI
             this.updateNoteDisplay(notes);
             this.detectAndDisplayChord(notes);
             
-            // En Sprint 2: Crear estrellas en la galaxia
-            // this.starSystem.createStars(notes);
+            console.log('✅ Reproducción completa: audio + visual');
             
         } catch (error) {
             console.error('❌ Error reproduciendo notas:', error);
@@ -293,11 +387,19 @@ class GalaxyPiano {
     }
     
     /**
-     * Detener todas las notas
+     * Detener todas las notas y estrellas
      */
     stopNotes() {
+        console.log('⏹️ Deteniendo todo...');
+        
+        // 1. Detener audio
         if (this.audioEngine) {
             this.audioEngine.stopAll();
+        }
+        
+        // 2. Detener estrellas
+        if (this.starSystem) {
+            this.starSystem.stopAll();
         }
         
         this.state.isPlaying = false;
@@ -306,7 +408,7 @@ class GalaxyPiano {
         this.updateNoteDisplay([]);
         this.updateChordInfo('---');
         
-        console.log('⏹️ Notas detenidas');
+        console.log('✅ Todo detenido');
     }
     
     /**
@@ -350,8 +452,9 @@ class GalaxyPiano {
             this.elements.currentNotesDisplay.textContent = 'Notas: Ninguna';
         } else {
             const noteNames = notes.map(note => {
-                if (typeof window.NoteMapping !== 'undefined') {
-                    return `${note} (${window.NoteMapping.getNoteName(note)})`;
+                if (window.NoteMapping) {
+                    const info = window.NoteMapping.getNoteInfo(note);
+                    return `${note} (${info?.noteName || 'N/A'})`;
                 }
                 return note.toString();
             });
@@ -368,9 +471,8 @@ class GalaxyPiano {
             return;
         }
         
-        // Detección básica de acordes (expandir en Sprint 3)
+        // Detección básica de acordes
         if (notes.length === 3) {
-            // Ejemplo: C major = notas 40,44,47 (C4,E4,G4)
             const sortedNotes = [...notes].sort((a, b) => a - b);
             const intervals = [
                 sortedNotes[1] - sortedNotes[0],
@@ -433,10 +535,13 @@ class GalaxyPiano {
         
         if (customStatus) {
             status = customStatus;
-            className = 'loading-state';
-        } else if (this.state.galaxyReady) {
-            status = 'Listo (Sprint 2)';
+            className = customStatus.includes('Error') ? 'error-state' : 'loading-state';
+        } else if (this.state.galaxyReady && this.state.starSystemReady) {
+            status = 'Listo';
             className = 'success-state';
+        } else if (this.state.galaxyReady) {
+            status = 'Configurando estrellas...';
+            className = 'loading-state';
         } else {
             status = 'Cargando...';
             className = 'loading-state';
@@ -460,9 +565,41 @@ class GalaxyPiano {
      */
     showError(message) {
         console.error('⚠️ Error:', message);
-        
-        // TODO: Implementar sistema de notificaciones más elegante
         alert('Galaxy Piano - Error: ' + message);
+    }
+    
+    /**
+     * Métodos de debug y testing
+     */
+    testStarColors() {
+        console.log('🧪 Testing colores de estrellas...');
+        
+        if (!this.starSystem) {
+            console.log('❌ StarSystem no disponible');
+            return;
+        }
+        
+        // Test de cada color
+        const testNotes = [1, 15, 30, 45, 60, 75, 88];
+        const colors = ['Azul', 'Azul-Blanco', 'Blanco', 'Blanco-Amarillo', 'Amarillo', 'Naranja', 'Rojo'];
+        
+        testNotes.forEach((note, index) => {
+            setTimeout(() => {
+                console.log(`🎨 Test ${colors[index]} - Nota ${note}`);
+                this.starSystem.testStar(note, 2.0);
+            }, index * 1000);
+        });
+    }
+    
+    getSystemInfo() {
+        return {
+            version: this.version,
+            isInitialized: this.isInitialized,
+            state: this.state,
+            audioStats: this.audioEngine?.getStats(),
+            galaxyInfo: this.galaxyRenderer?.getInfo(),
+            starStats: this.starSystem?.getStats()
+        };
     }
     
     /**
@@ -471,6 +608,10 @@ class GalaxyPiano {
     destroy() {
         if (this.audioEngine) {
             this.audioEngine.destroy();
+        }
+        
+        if (this.starSystem) {
+            this.starSystem.destroy();
         }
         
         if (this.galaxyRenderer) {
@@ -483,8 +624,28 @@ class GalaxyPiano {
 
 // Inicializar aplicación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
-    window.galaxyPiano = new GalaxyPiano();
-    await window.galaxyPiano.init();
+    try {
+        // Esperar un poco para asegurar que todos los scripts estén cargados
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        window.galaxyPiano = new GalaxyPiano();
+        await window.galaxyPiano.init();
+        
+    } catch (error) {
+        console.error('❌ Error crítico inicializando Galaxy Piano:', error);
+        
+        // Mostrar información de debug
+        setTimeout(() => {
+            console.log('\n🔍 INFORMACIÓN DE DEBUG:');
+            console.log('========================');
+            console.log('Three.js:', typeof THREE !== 'undefined' ? '✅' : '❌');
+            console.log('AudioEngine:', typeof AudioEngine !== 'undefined' ? '✅' : '❌');
+            console.log('GalaxyRenderer:', typeof GalaxyRenderer !== 'undefined' ? '✅' : '❌');
+            console.log('StarSystem:', typeof StarSystem !== 'undefined' ? '✅' : '❌');
+            console.log('NoteMapping:', typeof window.NoteMapping !== 'undefined' ? '✅' : '❌');
+            console.log('Canvas:', document.getElementById('galaxy-canvas') ? '✅' : '❌');
+        }, 1000);
+    }
 });
 
 // Cleanup al cerrar la ventana
@@ -493,3 +654,24 @@ window.addEventListener('beforeunload', () => {
         window.galaxyPiano.destroy();
     }
 });
+
+// Funciones globales para testing
+window.testStar = (note = 40) => {
+    if (window.galaxyPiano?.starSystem) {
+        window.galaxyPiano.starSystem.testStar(note, 3.0);
+    } else {
+        console.log('⚠️ StarSystem no disponible');
+    }
+};
+
+window.testColors = () => {
+    if (window.galaxyPiano) {
+        window.galaxyPiano.testStarColors();
+    }
+};
+
+window.getGalaxyInfo = () => {
+    if (window.galaxyPiano) {
+        console.table(window.galaxyPiano.getSystemInfo());
+    }
+};

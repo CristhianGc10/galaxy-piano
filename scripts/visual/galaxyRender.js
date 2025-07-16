@@ -1,7 +1,7 @@
 /**
  * GALAXY PIANO - GALAXY RENDERER
  * Visualización 3D completa con Three.js
- * Sprint 2 - Galaxia Base
+ * Sprint 2 - Galaxia Base CORREGIDO
  */
 
 class GalaxyRenderer {
@@ -19,7 +19,7 @@ class GalaxyRenderer {
             autoRotate: true,
             rotationSpeed: 0.001,
             starSize: 2.0,
-            backgroundStars: 1000
+            backgroundStars: 800
         };
         
         // Objetos Three.js
@@ -176,9 +176,6 @@ class GalaxyRenderer {
         
         // Configuraciones avanzadas
         this.renderer.shadowMap.enabled = false; // Por rendimiento
-        this.renderer.outputEncoding = THREE.sRGBEncoding;
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.0;
         
         console.log('🖥️ Renderer WebGL configurado');
     }
@@ -487,3 +484,4 @@ class GalaxyRenderer {
 
 // Exponer clase globalmente
 window.GalaxyRenderer = GalaxyRenderer;
+console.log('✅ GalaxyRenderer exportado correctamente');
